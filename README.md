@@ -210,3 +210,36 @@ El protocolo HTTP define un conjunto de métodos de solicitud. Un cliente puede 
 * CONNECT: Usado para indicarle a un proxy que haga una conexión a otro servidor y simplemente responda el contenido, sin intentar guardar o analizarlo.
 * Otros métodos de extensión.
 
+### Método de Solicitud GET
+
+GET es el método de solicitud HTTP más común. Un cliente usa GET para pedir (u obtener) una pieza de recurso de un servidor HTTP. Un mensaje de solicitud GET tiene la siguiente sintáxi:
+
+>_**GET** request-URI HTTP-version
+>(optional request headers)
+>(blank line)
+>(optional request body)_
+
+* La palabra clave GET es sensible a mayúsculas, y debe estar en ellas.
+* request-URI: especifica la ruta del recurso solicitado, la cual debe iniciar desde la raíz "/" del directorio base de documentos.
+* HTTP-version: Ya sea HTTP/1.0 o HTTP/1.0. El cliente _negocia_ el protocolo que será usado en la sesión actual. Por ejemplo, el cliente tal vez solicite usar HTTP/1.1. Si el servidor no soporta HTTP/1.1, este informa al cliente el uso de HTTP/1.0.
+* El cliente usa cabeceras de solicitud opcionales (como _Accept_, _Accept-language_, etc.) para negociar con el servidor y pedirle que entregue los contendidos preferidos (p.ej. en el lenguaje preferido por el cliente).
+* El mensaje de solicitud GET tiene un cuerpo de solicitud opcional que contiene la cadena de consulta (a explicarse más tarde).
+
+#### Probando Solicitudes HTTP
+
+Hay muchas maneras de probar las solicitudes HTTP. Se pueden usar programas de utilidades como "telnet" o "hyperterm" (busque "telnet.exe" o "hyperterm.exe" bajo c:\windows), o escriba su propia programa de red para enviar un mensaje de solicitud en bruto a un servidor TTP para probar las varias solicitudes HTTP.
+
+##### Telnet
+
+"Telnet" es una utilidad de red muy útil. Se puede usar telnet para establecer una conexión TCP con un servidor; y emitir una solicitud HTTP. Por ejemplo, supongamos que se ha inciado el servidor HTTP en el servidor local (dirección IP 127.0.0.1) en el puerto 8000:
+
+>> **telnet**
+>telnet> **help**
+... telnet help menu ...
+>telnet> **open 127.0.0.1 8000**
+>Connecting To 127.0.0.1...
+>**GET /index.html HTTP/1.0**
+>(Hit enter twice to send the terminating blank line ...)
+>... HTTP response message ...
+
+Telnet es un protocolo basasdo en caracteres. Cada caracter insertado en el cliente telnet será enviado al servidor inmediatamente. Por esto, no se puede hacer erroes de tecleo cuando se introducen los comandos, ya que delete y backspace serán enviados al servidor. Puede que se tenga que habilitar la opción "local echo" para ver los carateres que se introducen. Cheque el manual telnet (busque Windows' help) para ver detalles en el uso de telnet.
