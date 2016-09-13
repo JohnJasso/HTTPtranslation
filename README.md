@@ -195,3 +195,18 @@ EL cuerpo del mensaje de respuesta contiene los datos del recurso solicitado.
 #####Ejemplo
 
 Lo siguiente exhibe una muestra de mensaje de respuesta:
+
+### Métodos de Solicitud HTTP
+
+El protocolo HTTP define un conjunto de métodos de solicitud. Un cliente puede usar uno de estos métodos para enviar un mensaje de solicitud a un servidor HTTP. Los métodos son:
+
+* GET: UN cliente usa la solicitud GET para obtener un recurso web del servidor.
+* HEAD: Un cliente usa la solicitud HEAD para obtener la cabecera que un GET habría obtenido. Ya que la cabecera contiene la fecha cuando se modificaron los datos por última vez, esto puede ser usado para verificar con la copia local de cache.
+* POST: Usado para publicar datos en el servidor.
+* PUT: Pide al servidor guardar datos.
+* DELTE: Pide al servidor borrar datos.
+* TRACE: Pide al servidor regrese un rastro de diagnóstico de las acciones que toma.
+* OPTIONS: Pide al servidor regresar la lista de los métodos de solicitud que soporta.
+* CONNECT: Usado para indicarle a un proxy que haga una conexión a otro servidor y simplemente responda el contenido, sin intentar guardar o analizarlo.
+* Otros métodos de extensión.
+
