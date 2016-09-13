@@ -243,3 +243,137 @@ Hay muchas maneras de probar las solicitudes HTTP. Se pueden usar programas de u
 >... HTTP response message ...
 
 Telnet es un protocolo basasdo en caracteres. Cada caracter insertado en el cliente telnet será enviado al servidor inmediatamente. Por esto, no se puede hacer erroes de tecleo cuando se introducen los comandos, ya que delete y backspace serán enviados al servidor. Puede que se tenga que habilitar la opción "local echo" para ver los carateres que se introducen. Cheque el manual telnet (busque Windows' help) para ver detalles en el uso de telnet.
+
+##### Programa de Red
+
+También se podría escribir su propio programa de red para emitir una solicitud HTTP en bruto a un servidor HTTP. El programa debe primero establecer una conexión TCP/IP con el servidor. Una vez que la conexión es establecida, se puede emitir la solicitud.
+
+Un ejemplo de programa de red escrito en java es como se muestra (asumiendo que el servidor HTTP está corriendo en el servidor local (dirección IP 127.0.0.1) en el puerto 8000):
+
+˜˜˜˜
+import java.net.*;
+import java.io.*;
+   
+public class HttpClient {
+   public static void main(String[] args) throws IOException {
+      // The host and port to be connected.
+      String host = "127.0.0.1";
+      int port = 8000;
+      // Create a TCP socket and connect to the host:port.
+      Socket socket = new Socket(host, port);
+      // Create the input and output streams for the network socket.
+      BufferedReader in
+         = new BufferedReader(
+              new InputStreamReader(socket.getInputStream()));
+      PrintWriter out
+         = new PrintWriter(socket.getOutputStream(), true);
+      // Send request to the HTTP server.
+      out.println("GET /index.html HTTP/1.0");
+      out.println();   // blank line separating header & body
+      out.flush();
+      // Read the response and display on console.
+      String line;
+      // readLine() returns null if server close the network socket.
+      while((line = in.readLine()) != null) {
+         System.out.println(line);
+      }
+      // Close the I/O streams.
+      in.close();
+      out.close();
+   }
+}
+˜˜˜˜
+
+#### Solicitud GET HTTP/1.0
+
+Lo siguiente muestra la respuesta a una solicitud GET HTTP/1.0 (emitida via telnet o propio programa de red - asumiendo que se ha inicilizado un servidor HTTP):
+
+>**GET /index.html HTTP/1.0**
+>(enter twice to create a blank line)
+
+>**HTTP/1.1 200 OK**
+>Date: Sun, 18 Oct 2009 08:56:53 GMT
+>Server: Apache/2.2.14 (Win32)
+>Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+>ETag: "10000000565a5-2c-3e94b66c2e680"
+>Accept-Ranges: bytes
+>Content-Length: 44
+>Connection: close
+>Content-Type: text/html
+>X-Pad: avoid browser bug
+>   
+><html><body><h1>It works!</h1></body></html>
+>   
+>Connection to host lost.
+
+En este ejemplo, el cliente emite una solicitud GET para pedir un documento llamado "/index.html"; y negocia el uso de HTTP/1.0. Se necesita una línea en blanco después de la cabecera de solicitud. Este mensaje de solicitud no contiene un cuerpo.
+
+El servidor recibe el mensaje de solicitud, interpreta y mapea la _request-URI_ a un documento bajo el directorio de documentos. Si el documento solicitado está disponible, el servidor regresa el documento con un código de estatus "200 OK". Las cabeceras de respuesta proveen la descripción necesaria del documento recibido, como la última fecha de modificación (_Last-Modified_), el MIME type (Content-Type), y la longitud del documento (Content-length). El cuerpo de respuesta contiene el documento solicitado. El navegador formateará y mostrará el documento de acuerdo al tipo de media (p.ej. Texto simple, HTML, JPEG, GIF, etc.) y otra información obtenida de las cabeceras de respuesta.
+
+Notas:
+* El método de solicitud GET es sensible a mayúsculas, y debe estar en ellas.
+* Si el nombre del método de solicitud no se escribiío correctamente, el servidor regresará un mensaje de error "405 Method Not Allowed". P.ej. DELETE es un nombre válido de método, pero puede no ser permitido (o implementado) por el servidor.
+* Si el _request-URI_ no existe, el servidor regresará un mensaje de error "404 Not Found". Se tendrá que emitir una _request-URI_ correcta, empezando de la raíz "/". De otra manera, el servidor regresaría el mensaje de error "400 Bad Request".
+* Si _HTTP-version_ no existe o es incorrecto, el servidor regresará un mensaje de error "400 Bad Request".
+* En HTTP/1.0, por default, el servidor cierra la conexión TCP después que la respuesta es entregada. Si se usa telnet para conectarse al servidor, el mensaje "Conexión al servidor perdida" aparece inmediatamente después de que el cuerpo de respuesta es recibido. Se podría usar una cabecera opcional de solicitud "Connection: Keep-Alive" para solicitar una conexión persistente (o keep-alive), para que otra solicitud pueda ser enviada a través de la misma conexión TCP y conseguir una mejor eficiencia de red. Del otro lado, HTTP/1.1 usa conexiones keep-alive predeterminadamente.
+
+#### Código de Estatus de Respuesta
+
+La primera línea del mensaje de respuesta (la línea de estatus) contiene el código de estatus de respuesta, el cual es generado por el servidor para indicar el resultado de la solicitud.
+
+El código de estaus es un número de 3 dígitos:
+* 1xx (Información): Solicitud recibida, el servidor continua con el proceso.
+* 2xx (Éxito): La solicitud fue exitosamente recibida, entendida, aceptada y servida.
+* 3xx (Redirección): Se requieren más acciones para completar la solicitud.
+* 4xx (Error de cliente): La solicitud contien mala sintaxis o no puede ser entendida.
+* 5xx (Error de servidor): El servidor falló en cumplir una solicitud aparentemente válida.
+
+Algunos códigos de estatus comunmente econtrados:
+* 100 Continue: El servidor recibió la solicitud y está en el proceso de dar una respuesta.
+* 200 OK: La solicitud fue cumplida.
+* 301 Move Permanently: El recurso solicitado ha sido movido permanentemente a una nueva locación. La URLdela nueva locación es dada en la cabecera de respuesta llamada _Location_. El cliente debería emitir una nueva solicitud a la nueva locación. La aplicación debería actualizar todas las referencias a esta locación.
+* 302 Found & Redirect (or Move Temporarily): Igual que 301, pero la nueva locación es temporal. El cliente debería emitir una neuva solicitud, pero la aplicación no debería actualizar las referencias.
+* 304 Not Modified: En respuesta al condicional _If-Modified-Since_ de solicitud GET, el servidor notifica que el recurso solicitado no ha sido modificado.
+* 400 Bad Request: El servidor no pudo interpretar o entender la solicitud, probablemente debido a un error de sintaxis en el mensaje de solicitud.
+* 401 Authentication Required: El recurso solicitado está protegido,y requiere credenciales de cliente (username/password). El cliente debería reenviar la solicitud con sus credenciales.
+* 403 Forbidden: El servidor se reúsa a proveer el recurso, sin importar la identidad del cliente.
+* 404 Not Found: El recurso solicitado no puede ser encontrado en el servidor.
+* 405 Method Not Allowed: El método de solicitud usado, p.ej., POST, PUT, DELETE, es un método válido. Sin embargo, el servidor no permite ese método para el recurso solicitado.
+* 408 Request Timeout:
+* 414 Request URI too Large:
+* 500 Internal Server Error: El servidor está confundido, a menudo causado por un error en el lado del servidor del programa que responde a la solicitud.
+* 501 Method Not Implemented: El método de solicitud es inválido (podría ser por un error de tecleo, p.ej., "GET" escrito como "Get").
+* 502 Bad Gateway: Proxy o Gateway indica que recibe un mala respuesta del servidor.
+* 503 Service Unavailable: El servidor no puede responder debido a sobrecarga o mantenimiento. El cliente puede intentar más tarde.
+* 504 Gateway Timeout: Proxy o Gateway indica que recibe un receso del servidor.
+
+#### Más ejemplos de Solicitud GET HTTP/1.0
+
+##### Ejemplo: Método de Solicitud mal escrito
+En la solicitud, "GET" está mal escrito como "get". El servidor regresa un error "501 Method Not Implemented". La cabecera de respuesta "Allow" indica al cliente los métodos permitidos.
+
+>**get** /test.html HTTP/1.0
+>(enter twice to create a blank line)
+
+>HTTP/1.1 501 **Method Not Implemented**
+>Date: Sun, 18 Oct 2009 10:32:05 GMT
+>Server: Apache/2.2.14 (Win32)
+>**Allow: GET,HEAD,POST,OPTIONS,TRACE**
+>Content-Length: 215
+>Connection: close
+>Content-Type: text/html; charset=iso-8859-1
+>   
+><!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+><html><head>
+><title>501 Method Not Implemented</title>
+></head><body>
+><h1>Method Not Implemented</h1>
+><p>get to /index.html not supported.<br />
+></p>
+></body></html>
+
+
+
+
+
+
