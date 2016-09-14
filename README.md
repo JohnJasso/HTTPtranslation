@@ -200,7 +200,7 @@ Lo siguiente exhibe una muestra de mensaje de respuesta:
 
 El protocolo HTTP define un conjunto de métodos de solicitud. Un cliente puede usar uno de estos métodos para enviar un mensaje de solicitud a un servidor HTTP. Los métodos son:
 
-* GET: UN cliente usa la solicitud GET para obtener un recurso web del servidor.
+* GET: Un cliente usa la solicitud GET para obtener un recurso web del servidor.
 * HEAD: Un cliente usa la solicitud HEAD para obtener la cabecera que un GET habría obtenido. Ya que la cabecera contiene la fecha cuando se modificaron los datos por última vez, esto puede ser usado para verificar con la copia local de cache.
 * POST: Usado para publicar datos en el servidor.
 * PUT: Pide al servidor guardar datos.
@@ -214,10 +214,10 @@ El protocolo HTTP define un conjunto de métodos de solicitud. Un cliente puede 
 
 GET es el método de solicitud HTTP más común. Un cliente usa GET para pedir (u obtener) una pieza de recurso de un servidor HTTP. Un mensaje de solicitud GET tiene la siguiente sintáxi:
 
->_**GET** request-URI HTTP-version
->(optional request headers)
->(blank line)
->(optional request body)_
+> _**GET** request-URI HTTP-version
+> (optional request headers)
+> (blank line)
+> (optional request body)_
 
 * La palabra clave GET es sensible a mayúsculas, y debe estar en ellas.
 * request-URI: especifica la ruta del recurso solicitado, la cual debe iniciar desde la raíz "/" del directorio base de documentos.
@@ -233,14 +233,14 @@ Hay muchas maneras de probar las solicitudes HTTP. Se pueden usar programas de u
 
 "Telnet" es una utilidad de red muy útil. Se puede usar telnet para establecer una conexión TCP con un servidor; y emitir una solicitud HTTP. Por ejemplo, supongamos que se ha inciado el servidor HTTP en el servidor local (dirección IP 127.0.0.1) en el puerto 8000:
 
->> **telnet**
->telnet> **help**
-... telnet help menu ...
->telnet> **open 127.0.0.1 8000**
->Connecting To 127.0.0.1...
->**GET /index.html HTTP/1.0**
->(Hit enter twice to send the terminating blank line ...)
->... HTTP response message ...
+> **telnet**
+> telnet> **help**
+> ... telnet help menu ...
+> telnet> **open 127.0.0.1 8000**
+> Connecting To 127.0.0.1...
+> **GET /index.html HTTP/1.0**
+> (Hit enter twice to send the terminating blank line ...)
+> ... HTTP response message ...
 
 Telnet es un protocolo basasdo en caracteres. Cada caracter insertado en el cliente telnet será enviado al servidor inmediatamente. Por esto, no se puede hacer erroes de tecleo cuando se introducen los comandos, ya que delete y backspace serán enviados al servidor. Puede que se tenga que habilitar la opción "local echo" para ver los carateres que se introducen. Cheque el manual telnet (busque Windows' help) para ver detalles en el uso de telnet.
 
@@ -250,7 +250,7 @@ También se podría escribir su propio programa de red para emitir una solicitud
 
 Un ejemplo de programa de red escrito en java es como se muestra (asumiendo que el servidor HTTP está corriendo en el servidor local (dirección IP 127.0.0.1) en el puerto 8000):
 
-˜˜˜˜
+'''
 import java.net.*;
 import java.io.*;
    
@@ -263,7 +263,7 @@ public class HttpClient {
       Socket socket = new Socket(host, port);
       // Create the input and output streams for the network socket.
       BufferedReader in
-         = new BufferedReader(
+         = new  BufferedReader(
               new InputStreamReader(socket.getInputStream()));
       PrintWriter out
          = new PrintWriter(socket.getOutputStream(), true);
@@ -282,29 +282,29 @@ public class HttpClient {
       out.close();
    }
 }
-˜˜˜˜
+'''
 
 #### Solicitud GET HTTP/1.0
 
 Lo siguiente muestra la respuesta a una solicitud GET HTTP/1.0 (emitida via telnet o propio programa de red - asumiendo que se ha inicilizado un servidor HTTP):
 
->**GET /index.html HTTP/1.0**
->(enter twice to create a blank line)
+> **GET /index.html HTTP/1.0**
+> (enter twice to create a blank line)
 
->**HTTP/1.1 200 OK**
->Date: Sun, 18 Oct 2009 08:56:53 GMT
->Server: Apache/2.2.14 (Win32)
->Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
->ETag: "10000000565a5-2c-3e94b66c2e680"
->Accept-Ranges: bytes
->Content-Length: 44
->Connection: close
->Content-Type: text/html
->X-Pad: avoid browser bug
+> **HTTP/1.1 200 OK**
+> Date: Sun, 18 Oct 2009 08:56:53 GMT
+> Server: Apache/2.2.14 (Win32)
+> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+> ETag: "10000000565a5-2c-3e94b66c2e680"
+> Accept-Ranges: bytes
+> Content-Length: 44
+> Connection: close
+> Content-Type: text/html
+> X-Pad: avoid browser bug
 >   
-><html><body><h1>It works!</h1></body></html>
+> <html><body><h1>It works!</h1></body></html>
 >   
->Connection to host lost.
+> Connection to host lost.
 
 En este ejemplo, el cliente emite una solicitud GET para pedir un documento llamado "/index.html"; y negocia el uso de HTTP/1.0. Se necesita una línea en blanco después de la cabecera de solicitud. Este mensaje de solicitud no contiene un cuerpo.
 
@@ -352,25 +352,146 @@ Algunos códigos de estatus comunmente econtrados:
 ##### Ejemplo: Método de Solicitud mal escrito
 En la solicitud, "GET" está mal escrito como "get". El servidor regresa un error "501 Method Not Implemented". La cabecera de respuesta "Allow" indica al cliente los métodos permitidos.
 
->**get** /test.html HTTP/1.0
->(enter twice to create a blank line)
+> **get** /test.html HTTP/1.0
+> (enter twice to create a blank line)
 
->HTTP/1.1 501 **Method Not Implemented**
->Date: Sun, 18 Oct 2009 10:32:05 GMT
->Server: Apache/2.2.14 (Win32)
->**Allow: GET,HEAD,POST,OPTIONS,TRACE**
->Content-Length: 215
->Connection: close
->Content-Type: text/html; charset=iso-8859-1
+> HTTP/1.1 501 **Method Not Implemented**
+> Date: Sun, 18 Oct 2009 10:32:05 GMT
+> Server: Apache/2.2.14 (Win32)
+> **Allow: GET,HEAD,POST,OPTIONS,TRACE**
+> Content-Length: 215
+> Connection: close
+> Content-Type: text/html; charset=iso-8859-1
 >   
-><!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-><html><head>
-><title>501 Method Not Implemented</title>
-></head><body>
-><h1>Method Not Implemented</h1>
-><p>get to /index.html not supported.<br />
-></p>
-></body></html>
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <html><head>
+> <title>501 Method Not Implemented</title>
+> </head><body>
+> <h1>Method Not Implemented</h1>
+> <p>get to /index.html not supported.<br />
+> </p>
+> </body></html>
+
+##### Ejemplo: 404 File Not Found:
+In esta solicitud GET, la URL de solicitud "/t.html" no se puede encontrar bajo el directorio de documento del servidor. El servidor regresa un error "404 Not Found".
+
+> GET **/t.html** HTTP/1.0
+> (enter twice to create a blank line)
+
+
+> HTTP/1.1 404 Not Found
+> Date: Sun, 18 Oct 2009 10:36:20 GMT
+> Server: Apache/2.2.14 (Win32)
+> Content-Length: 204
+> Connection: close
+> Content-Type: text/html; charset=iso-8859-1
+>    
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <html><head>
+> <title>404 Not Found</title>
+> </head><body>
+> <h1>Not Found</h1>
+> <p>The requested URL /t.html was not found on this server.</p>
+> </body></html>
+
+##### Ejemplo: Número de Versión HTTP Incorrecto
+En esta solicitud GET, la versión HTTP fue mal escrita, resultando en una mala sintaxis.El servidor regresa un erro "404B Bad Request". La version HTTP debería ser ya sea HTTP/1.0 o HTTP/1.1.
+
+> GET /index.html **HTTTTTP/1.0**
+> (enter twice to create a blank line)
+
+> HTTP/1.1 **400 Bad Request**
+> Date: Sun, 08 Feb 2004 01:29:40 GMT
+> Server: Apache/1.3.29 (Win32)
+> Connection: close
+> Content-Type: text/html; charset=iso-8859-1
+> 
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <HTML><HEAD>
+> <TITLE>400 Bad Request</TITLE>
+> </HEAD><BODY>
+> <H1>Bad Request</H1>
+> Your browser sent a request that this server could not understand.<P>
+> The request line contained invalid characters following the protocol string.<P><P>
+> </BODY></HTML>
+
+Nota: El último Apache 2.2.14 ignora este error y regresa el documento con el código de estatus "200 OK".
+
+##### Ejemplo: Request-URI Incorrecta
+En la siguiente solicitud GET, la _request-URI_ no comenzó desde la raíz "/", resultando en "bad request".
+
+> GET test.html HTTP/1.0
+> (blank line)
+
+> HTTP/1.1 **400 Bad Request**
+> Date: Sun, 18 Oct 2009 10:42:27 GMT
+> Server: Apache/2.2.14 (Win32)
+> Content-Length: 226
+> Connection: close
+> Content-Type: text/html; charset=iso-8859-1
+>    
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <html><head>
+> <title>400 Bad Request</title>
+> </head><body>
+> <h1>Bad Request</h1>
+> <p>Your browser sent a request that this server could not understand.<br />
+> </p>
+> </body></html>
+
+##### Ejemplo: Conexión Keep-Alive
+Predeterminadamente, para solicitud GET HTTP/1.0, el servidor cierra la conexión TCP una vez que la respuesta es entregada. Se podría solicitar que la conexión TCP se mantenga, (para mandar otra solicitud usando la misma conexión TCP, y así mejorar la eficiencia de red), usando una cabecera opcional de solicitud "_Connection: Keep-Alive_". El servidor incluye una cabecera de respuesta de conexión Keep-Alive oara informar al cliente que puede enviar otra solicitud usando esta conexión, antes del receso de keep-alive. Otra cavecara de respuesta, "_Keep-Alive: timeout=x, max=x_" indica al cliente el receso (en segundos) y el máximo número de solicitudes que pueden ser enviadas a través de esta conexión persistente.
+
+> GET /test.html HTTP/1.0
+> Connection: Keep-Alive
+> (blank line)
+
+> HTTP/1.1 200 OK
+> Date: Sun, 18 Oct 2009 10:47:06 GMT
+> Server: Apache/2.2.14 (Win32)
+> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+> ETag: "10000000565a5-2c-3e94b66c2e680"
+> Accept-Ranges: bytes
+> Content-Length: 44
+> Keep-Alive: timeout=5, max=100
+> Connection: Keep-Alive
+> Content-Type: text/html
+>    
+> <html><body><h1>It works!</h1></body></html>
+
+Notas:
+* El mensaje "Connection to host lost" (para telnet) aparece después del receso "keep-alive".
+* Antés de que el mensaje "Connection to host lost" aparezca (i.e. receso keep-alive), se puede enviar otra solicituda través de la misma conexión TCP.
+* La cabecera "Connection: Keep-Alive" no es sensible a mayúsculas. El espacio es opcional.
+* Si una cabecera opcional está mal escrita o es inválida, será ignorada por el servidor.
+
+##### Ejemplo: Acceso a un Recurso Protegido
+La siguiente solicitud GET intento accesar un recurso protegido. El servidor regresa un error "403 Forbidden". En este ejemplo, el directorio "_htdocs\forbidden_" está configurado para denegar todo acceso en el archivo de configuración  "_httpd.conf_" del servidor HTTP Apache de la siguiente manera:
+
+> <Directory "C:/apache/htdocs/forbidden">
+>    Order deny,allow
+>    deny from all
+> </Directory>
+
+> GET /forbidden/index.html HTTP/1.0
+> (blank line)
+
+> HTTP/1.1 403 Forbidden
+> Date: Sun, 18 Oct 2009 11:58:41 GMT
+> Server: Apache/2.2.14 (Win32)
+> Content-Length: 222
+> Keep-Alive: timeout=5, max=100
+> Connection: Keep-Alive
+> Content-Type: text/html; charset=iso-8859-1
+>    
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <html><head>
+> <title>403 Forbidden</title>
+> </head><body>
+> <h1>Forbidden</h1>
+> <p>You don't have permission to access /forbidden/index.html
+> on this server.</p>
+> </body></html>
 
 
 
