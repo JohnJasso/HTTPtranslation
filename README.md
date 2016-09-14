@@ -652,7 +652,101 @@ EL siguiente rastro fue capturado usando telnet. Una conexión establecida con e
 
 Tome nota de que la respuesta es regresada por pedazos.
 
+### Método de Solicitud “HEAD”
 
+La solicitud HEAD es similar a GET. Sin embargo, el servidor regresa solamente la cabecera de respuesta sin el cuerpo de respuesta, el cual contiene el documento en sí. La solicitud HEAD es útil para checar las cabeceras, tales como Last-Modified, Content-Type, Content-Length, anteved enviar una solicitud GET apropiada para obtener el documento.
+
+La sintaxis de la solicitud HEAD es como sigue:
+> HEAD request-URI HTTP-version
+> (other optional request headers)
+> (blank line)
+> (optional request body)
+
+##### Ejemplo
+
+> HEAD /index.html HTTP/1.0
+> (blank line)
+
+> HTTP/1.1 200 OK
+> Date: Sun, 18 Oct 2009 14:09:16 GMT
+> Server: Apache/2.2.14 (Win32)
+> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+> ETag: "10000000565a5-2c-3e94b66c2e680"
+> Accept-Ranges: bytes
+> Content-Length: 44
+> Connection: close
+> Content-Type: text/html
+> X-Pad: avoid browser bug
+
+Note que la respuesta consiste de la cabecera únicamente sin el cuerpo, el cual contiene el documento en sí.
+
+### Método de Solicitud “OPTIONS”
+
+Un cliente puede usar un método de solicitud OPTIONS para consultar al servidor cuales métodos son soportados. La sintaxis para un mensaje de solicitud OPTIONS es:
+> OPTIONS request-URI|* HTTP-version
+> (other optional headers)
+> (blank line)
+
+“+” puede ser usado en lugar de una request-URI para indicar que la solicitud no se aplica a ningún recurso en particular.
+
+##### Ejemplo
+
+Por ejemplo, la siguiente solicitud OPTIONS es mandado a través de un servidor proxy:
+
+> OPTIONS http://www.amazon.com/ HTTP/1.1
+> Host: www.amazon.com
+> Connection: Close
+> (blank line)
+
+> HTTP/1.1 200 OK
+> Date: Fri, 27 Feb 2004 09:42:46 GMT
+> Content-Length: 0
+> Connection: close
+> Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
+> Allow: GET, HEAD, POST, OPTIONS, TRACE
+> Connection: close
+> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+> (blank line)
+
+Todos los servidores que permiten una solicitud GET permitirán una solicitud HEAD. A veces HEAD no es listada.
+
+
+### Método de Solicitud “TRACE”
+
+Un cliente puede enviar una solicitud TRACE para pedir al servidor regrese un rastro de diagnóstico.
+
+La solicitud TRACE toma la siguiente sintaxis:
+> TRACE / HTTP-version
+> (blank line)
+
+##### Ejemplo
+
+EL siguiente ejemplo muestra una solicitud TRACE emitida a través de un servidor proxy.
+
+> TRACE http://www.amazon.com/ HTTP/1.1
+> Host: www.amazon.com
+> Connection: Close
+> (blank line)
+
+> HTTP/1.1 200 OK
+> Transfer-Encoding: chunked
+> Date: Fri, 27 Feb 2004 09:44:21 GMT
+> Content-Type: message/http
+> Connection: close
+> Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
+> Connection: close
+> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+>    
+> 9d
+> TRACE / HTTP/1.1
+> Connection: keep-alive
+> Host: www.amazon.com
+> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+> X-Forwarded-For: 155.69.185.59, 155.69.5.234
+>    
+> 0
+
+(Para comparar la solicitud TRACE con la ruta de rastreo)
 
 
 
