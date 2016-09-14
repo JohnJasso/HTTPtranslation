@@ -8,6 +8,8 @@
 
 El Internet (o la Web) es un sistema de información cliente/servidor distribuido masivo, tal como se muestre en el siguiente diagrama:
 
+![Alt](/images/screen1.png "Title")
+
 Muchas aplicaciones corren concurrentemente a través de la Web, tales como navegación o “surfeo” de la Web, e-mail, transferencia de archivos, transmisión de audio y video, y más. Para que se lleve a cabo una comunicación apropiada entre el cliente y el servidor, estas aplicaciones deben estar de acuerdo en un protocolo a nivel de aplicación, como lo son HTTP, FTP, SMTP, POP, etc.
 
 ####HyperText Transfer Protocol (HTTP)
