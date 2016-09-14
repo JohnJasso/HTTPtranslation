@@ -581,7 +581,77 @@ Las siguientes cabeceras pueden se usadas para "negociación de contenido" por e
 
 **If-Modified-Since: date** - Dice al servidor que envíe la página sólo si ha sido modificada después de una fecha especifica.
 
-#### Solicitud GET por un Directorio
+#### Solicitud GET de un Directorio
+
+Suponga que un directorio llamado “testdir” está presente en el documento base “htdocs”.
+
+Si el cliente emite una solicitud GET a “/testdir/“ (al directorio).
+
+	1. El servidor regresará “/testdir/index.html” si el directorio contiene un archive “index.html”.
+	2. De otra forma, el servidor regresa la lista de directorios, si la lista de directorios está habilitada en la configuración del servidor.
+	3. De otra forma, el servidor regresa “404 Page Not Found”.
+
+Es interesante tomar nota que si un cliente emite una solicitud GET a “/testdir” (sin especificar la ruta de directorio “/“), el servidor regresa “301 Move Permanently” con una nueva “Location” de “/testdir/“, como sigue.
+
+> GET /testdir HTTP/1.1
+> Host: 127.0.0.1
+> (blank line)
+
+> HTTP/1.1 301 Moved Permanently
+> Date: Sun, 18 Oct 2009 13:19:15 GMT
+> Server: Apache/2.2.14 (Win32)
+> Location: http://127.0.0.1:8000/testdir/
+> Content-Length: 238
+> Content-Type: text/html; charset=iso-8859-1
+>    
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <html><head>
+> <title>301 Moved Permanently</title>
+> </head><body>
+> <h1>Moved Permanently</h1>
+> <p>The document has moved <a href="http://127.0.0.1:8000/testdir/">here</a>.</p>
+> 
+> </body></html>
+
+La mayoría de los navegadores seguirán con otra solicitud a “/testdir/“. Por ejemplo, si se emite http://127.0.0.1:8000/testdir sin “/“ desde un navegador, se podría notar que “/“ fue añadido a la dirección después de que la respuesta fue dad. La moraleja de la historia es: se debería incluir el “/“ para que una solicitud de directorio guarde una solicitud GET adicional.
+
+#### Emitir una Solicitud GET a través de un Servidor Proxy
+
+Para enviar una solicitud GET a través de un servidor proxy, (a) establezca una conexión TCP al servidor proxy; (b) use una request-URI absoluta http://hostname:port/path/fileName al servidor objetivo.
+
+EL siguiente rastro fue capturado usando telnet. Una conexión establecida con el servidor proxy, y una solicitud GET emitida. Una request-URI absoluta es usada en la linea de solicitud.
+
+> GET http://www.amazon.com/index.html HTTP/1.1
+> Host: www.amazon.com
+> Connection: Close
+> (blank line)
+
+> HTTP/1.1 302 Found
+> Transfer-Encoding: chunked
+> Date: Fri, 27 Feb 2004 09:27:35 GMT
+> Content-Type: text/html; charset=iso-8859-1
+> Connection: close
+> Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
+> Set-Cookie: skin=; domain=.amazon.com; path=/; expires=Wed, 01-Aug-01 12:00:00 > GMT
+> Connection: close
+> Location: http://www.amazon.com:80/exec/obidos/subst/home/home.html
+> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+>    
+> ed
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <HTML><HEAD>
+> <TITLE>302 Found</TITLE>
+> </HEAD><BODY>
+> <H1>Found</H1>
+> The document has moved
+> <A HREF="http://www.amazon.com:80/exec/obidos/subst/home/home.html">
+> here</A>.<P>
+> </BODY></HTML>
+>    
+> 0
+
+Tome nota de que la respuesta es regresada por pedazos.
+
 
 
 
