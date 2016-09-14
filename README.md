@@ -15,8 +15,10 @@ Muchas aplicaciones corren concurrentemente a través de la Web, tales como nave
 ####HyperText Transfer Protocol (HTTP)
 
 HTTP (HyperText Transfer Protocol) es tal vez el más popular protocolo de aplicación usado en el Internet (o la Web).
-* HTTP es un protocolo solicitud-respuesta, cliente-servidor asimétrico como se ilustra. Un cliente HTTP envía un mensaje de solicitud a un servidor HTTP. El servidor,en su turno, regresa un mensaje de respuesta.
-En otras palabras, HTTP es un protocolo de llamada, el cliente “llama” información del servidor (en su lugar el servidor envía información al cliente).
+* HTTP es un protocolo solicitud-respuesta, cliente-servidor asimétrico como se ilustra. Un cliente HTTP envía un mensaje de solicitud a un servidor HTTP. El servidor,en su turno, regresa un mensaje de respuesta. En otras palabras, HTTP es un protocolo de llamada, el cliente “llama” información del servidor (en su lugar el servidor envía información al cliente).
+
+![Alt](/images/screen2.png "Title")
+
 * HTTP es un protocolo sin estados. En otras palabras, la solicitud actual no sabe lo que se ha hecho en solicitudes anteriores.
 * HTTP permite la negociación y representación de datos, para permitir la construcción de sistemas independientemente de los datos que están siendo transferidos.
 * Citando de RFC2616: “El Protocolo de Transferencia de Hipertexto (HTTP) es un protocolo de aplicación para sistemas de información distribuidos, colaborativos, y de hipermedia. Es un protocolo genérico y sin estados que puede ser usado para muchas tareas más allá de su uso para el hipertexto, tales como la asignación de nombre a servidores y sistemas de manejo de objetos distribuidos, a través de la extensión de sus métodos de solicitud, códigos de error, y cabeceras.”
@@ -25,6 +27,8 @@ En otras palabras, HTTP es un protocolo de llamada, el cliente “llama” infor
 
 Cuando sea que emites una URL desde tu navegador para obtener un recurso web usando HTTP, p. ej. http://www.nowhere123.com/index.html, el navegador transforma la URL en un mensaje de solicitud y lo envía al servidor HTTP. El servidor HTTP interpreta este mensaje, y te regresa un mensaje de respuesta apropiado, el cual es o el recurso que solicitaste o un mensaje de error.
 El proceso está ilustrado debajo:
+
+![Alt](/images/screen3.png "Title")
 
 ####Uniform Resource Locator (URL)
 
@@ -89,6 +93,8 @@ En su estado inactivo, un servidor HTTP no hace nada más que escuchar por las d
 
 HTTP es un protocolo de aplicación cliente-servidor. Típicamente corre a través de una conexión TCP/IP, como es ilustrado. (HTTP no necesita correr en TCP/IP. Solo es un transporte confiable. Cualquier protocolo de transporte que provea tales garantías puede ser usado.)
 
+![Alt](/images/screen4.png "Title")
+
 TCP/IP (Transmission Control Protocol/Interner Protocol) es un conjunto de protocolos de transporte y de red-capa para máquinas, para que se comuniquen entre sí a través de la red.
 
 IP (Internet Protocolo) es un protocolo red-capa, se encarga del direccionamiento y orientación de red. En una red IP, cada máquina es asignada con una dirección IP única (p. ej. 165.1.2.3), y el software IP es responsable por orientar un mensaje desde la IP fuente a la IP destino. En IPv4 (IP version 4),la dirección IP consta de 4 bytes, cada uno va de 0 a 255, separados por puntos, lo cual es llamado la forma quad-dotted. Este esquema de numeración soporta direcciones 4G en la red. La última IPv6 (IP versión 6) soporta más direcciones. Ya que memorizar números es difícil para la mayoría de personas, un nombre de dominio parecido al lenguaje natural, como lo es www.nowhere123.com es usado en su lugar. El DNS (Domain Name Service) traduce el nombre de dominio a la dirección IP (via tablas lookup distribuidas). Una dirección IP especial 127.0.0.1 siempre se refiere a tu propia máquina. Su nombre de dominio es “localhost” y puede ser usada para un testeo de bucle.
@@ -121,9 +127,13 @@ Cliente y servidor HTTP se comunican enviando y recibiendo mensajes de texto. El
 
 Un mensaje HTTP consiste de una cabecera de mensaje y un cuerpo de mensaje opcional, separados por un línea en blanco, como se ilustra debajo:
 
+![Alt](/images/screen5.png "Title")
+
 ####Mensaje HTTP de Solicitud
 
 El formato de un mensaje HTTP de solicitud es como se muestra:
+
+![Alt](/images/screen6.png "Title")
 
 #####Línea de Solicitud
 
@@ -158,9 +168,13 @@ Ejemplos de cabeceras de solicitud son:
 
 Los siguiente exhibe una muestra de un mensaje HTTP de solicitud:
 
+![Alt](/images/screen7.png "Title")
+
 ####Mensaje HTTP de Respuesta
 
 El formato de un mensaje HTTP de respuesta es como sigue:
+
+![Alt](/images/screen8.png "Title")
 
 #####Línea de Estatus
 
@@ -197,6 +211,8 @@ EL cuerpo del mensaje de respuesta contiene los datos del recurso solicitado.
 #####Ejemplo
 
 Lo siguiente exhibe una muestra de mensaje de respuesta:
+
+![Alt](/images/screen9.png "Title")
 
 ### Métodos de Solicitud HTTP
 
