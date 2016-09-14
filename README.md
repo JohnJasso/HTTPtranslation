@@ -250,7 +250,7 @@ También se podría escribir su propio programa de red para emitir una solicitud
 
 Un ejemplo de programa de red escrito en java es como se muestra (asumiendo que el servidor HTTP está corriendo en el servidor local (dirección IP 127.0.0.1) en el puerto 8000):
 
-'''
+```
 import java.net.*;
 import java.io.*;
    
@@ -282,7 +282,7 @@ public class HttpClient {
       out.close();
    }
 }
-'''
+```
 
 #### Solicitud GET HTTP/1.0
 
@@ -440,7 +440,7 @@ En la siguiente solicitud GET, la _request-URI_ no comenzó desde la raíz "/", 
 > </body></html>
 
 ##### Ejemplo: Conexión Keep-Alive
-Predeterminadamente, para solicitud GET HTTP/1.0, el servidor cierra la conexión TCP una vez que la respuesta es entregada. Se podría solicitar que la conexión TCP se mantenga, (para mandar otra solicitud usando la misma conexión TCP, y así mejorar la eficiencia de red), usando una cabecera opcional de solicitud "_Connection: Keep-Alive_". El servidor incluye una cabecera de respuesta de conexión Keep-Alive oara informar al cliente que puede enviar otra solicitud usando esta conexión, antes del receso de keep-alive. Otra cavecara de respuesta, "_Keep-Alive: timeout=x, max=x_" indica al cliente el receso (en segundos) y el máximo número de solicitudes que pueden ser enviadas a través de esta conexión persistente.
+Predeterminadamente, para solicitud GET HTTP/1.0, el servidor cierra la conexión TCP una vez que la respuesta es entregada. Se podría solicitar que la conexión TCP se mantenga, (para mandar otra solicitud usando la misma conexión TCP, y así mejorar la eficiencia de red), usando una cabecera opcional de solicitud "_Connection: Keep-Alive_". El servidor incluye una cabecera de respuesta de conexión Keep-Alive para informar al cliente que puede enviar otra solicitud usando esta conexión, antes del receso de keep-alive. Otra cabecara de respuesta, "_Keep-Alive: timeout=x, max=x_" indica al cliente el receso (en segundos) y el máximo número de solicitudes que pueden ser enviadas a través de esta conexión persistente.
 
 > GET /test.html HTTP/1.0
 > Connection: Keep-Alive
@@ -461,7 +461,7 @@ Predeterminadamente, para solicitud GET HTTP/1.0, el servidor cierra la conexió
 
 Notas:
 * El mensaje "Connection to host lost" (para telnet) aparece después del receso "keep-alive".
-* Antés de que el mensaje "Connection to host lost" aparezca (i.e. receso keep-alive), se puede enviar otra solicituda través de la misma conexión TCP.
+* Antés de que el mensaje "Connection to host lost" aparezca (i.e. receso keep-alive), se puede enviar otra solicitud a través de la misma conexión TCP.
 * La cabecera "Connection: Keep-Alive" no es sensible a mayúsculas. El espacio es opcional.
 * Si una cabecera opcional está mal escrita o es inválida, será ignorada por el servidor.
 
@@ -492,6 +492,113 @@ La siguiente solicitud GET intento accesar un recurso protegido. El servidor reg
 > <p>You don't have permission to access /forbidden/index.html
 > on this server.</p>
 > </body></html>
+
+#### Solicitud GET HTTP/1.1
+
+Un servidor HTTP/1.1 soporta los llamados virtual hosts (servidores virtuales). Eso es, el mismo servidor físico podría tener varios servidores virtuales, con diferentes hostnames (p.ej. www.nowhere123.com y www.test909.com) y sus propios directorios raíz de documentos dedicados. Por tanto, en una solicitud HTTP/1.1, es obligatorio incluir una cabecera de solicitud llamada "Host", para seleccionar uno de los servidores virtuales.
+
+##### Ejemplo: Solicitud GET HTTP/1.1
+HTTP/1.1 mantiene conexión persistente (o keep-alive) de manera predeterminada para mejorar la eficiencia de red. Se puede usar una cabecera de solicitud "Connection: Close" para pedir al servidor cerrar la conexión TCP una vez que la respuesta fue entregada.
+
+> GET /index.html HTTP/1.1
+> **Host: 127.0.0.1**
+> (blank line)
+
+> HTTP/1.1 200 OK
+> Date: Sun, 18 Oct 2009 12:10:12 GMT
+> Server: Apache/2.2.14 (Win32)
+> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+> ETag: "10000000565a5-2c-3e94b66c2e680"
+> Accept-Ranges: bytes
+> Content-Length: 44
+> Content-Type: text/html
+>    
+> <html><body><h1>It works!</h1></body></html>
+
+##### Ejemplo: Cabecera de Servidor HTTP/1.1 Faltante
+El siguiente ejemplo muestra que la cabecera "Host" es obligatoria en una solicitud HTTP/1.1. Si esta está faltante,el servidor regresa un error "400 Bad Request".
+
+> GET /index.html HTTP/1.1
+> (blank line)
+
+> HTTP/1.1 400 Bad Request
+> Date: Sun, 18 Oct 2009 12:13:46 GMT
+> Server: Apache/2.2.14 (Win32)
+> Content-Length: 226
+> Connection: close
+> Content-Type: text/html; charset=iso-8859-1
+>    
+> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+> <html><head>
+> <title>400 Bad Request</title>
+> </head><body>
+> <h1>Bad Request</h1>
+> <p>Your browser sent a request that this server could not understand.<br />
+> </p>
+> </body></html>
+
+#### Solicitudes GET Condicionales
+
+En todos los ejemplos anteriores, el servidor regresa el documento entero si la solicitud puede ser completada (incondicional). Se puede usar cabeceras de solicitud adicionales para emitir una "solicitud condicional". Por ejemplo, para pedir el documento basado en la fecha en que se modificó por última vez (para decidir si debería usar una copia local de cache o no), o para pedir por una porción del documento (o rango) en lugar del documento entero (útil para descargar documentos muy grandes).
+
+Las cabeceras condicionales son:
+
+* _If-Modified-Since_ (checa por el código de estatus de respuesta "304 Not Modified")
+* _If-Unmodified-Since_
+* _If-Match_
+* _If-None-Match_
+* _If-Range_
+
+#### Cabeceras de Solicitud
+
+Esta sección describe algunos de las cabeceras de solicitud usadas comúnmente. Refiérase a la Especificación HTTP para más detalles. La sintaxis del nombre de la cabecera es palabras con mayúscula inicial unidas con un guión (-), p.ej., _Content-Length_, _If-Modified-Since_.
+
+**Host: domain-name** - HTTP/1.1 soporta servidores virtuales. Multiples nombres DNS (p.ej., www.nowhere123.com y www.nowhere456.com) pueden residir en el mismo servidor físico, con sus propios directorios raíz de documentos. La cabecera _Host_ es obligatoria en HTTP/1.1 para seleccionar uno de los servidores.
+
+Las siguientes cabeceras pueden se usadas para "negociación de contenido" por el cliente para pedir al servidor que entregue el tipo preferido de documento (en términos del tipo de media, p.ej. JPEG vs.GIF, o el lenguaje usado p.ej. Inglés vs. Francés) si el servidor mantiene multiples versiones del mismo documento.
+
+**Accept:mime-type-1, mime-type-2, ...** - EL cliente puede usar la cabecera _Accept_ para decirle al servidor los tipos MIME que puede soportar y que prefiere. Si el servidor tiene múltiples versiones  del documento solicitado (p.ej. una imagen GIF y JPEG, o un documento en TXT y PDF), puede checar esta cabecera para decidir cual versión entregar al cliente. (P.ej.,PNG es más avanzado que GIF, pero no todos los navegadores soportan PNG.) Este proceso es llamadado "Negociación de Tipo de Contenido".
+
+**Accept-Charset: Charset-1, Charset-2, …** - Para la negociación del conjunto caracteres, el cliente puede usar esta cabecera para decir al servidor cual conjunto de caracteres puede soportar o prefiere. Ejemplos de conjuntos de caracteres son ISO-8859-1, ISO-8859-5, BIG5, UCS2, UCS4, UTF8.
+
+**Accept-Enconding: encoding-method-1, encondig-method-2, …** - El cliente pude usar esta cabecera para decirle al servidor el tipo de codificación que soporta. Si el servidor tiene una versión codificada (o comprimida) del documento solicitado, puede regresar una versión codificado soportada por el cliente. El servidor también puede elegir codificaren documento antes de regresarlo al cliente para reducir el tiempo de transmisión. El servidor debe definir la cabecera de solicitud “Content-Encoding” para informar al cliente que el documento regresado está codificado. Métodos comunes de codificación son “x-gzip (.gz, .tgz)” y “x-compress (.Z)”.
+
+**Connection: Close|Keep-Alive**  - El cliente puede usar esta cabecera para decirle al servidor su debe cerrar la conexión después de la solicitud, o si debe mantenerla viva para otra solicitud. HTTP/1.1 usa conexiones persistentes (keep-alive) de manera predeterminada. HTTP/1.0 cierra las conexiones.
+
+**Referer: referer-URL** - El cliente puede usar esta cabecera para indicar el referente de la solicitud. If se hace click en un link de una página web 1 para visitar una página 2, la página 1 es el referente a la página 2. Todos los principales navegadores definen esta cabecera, la cual puede ser usada para rastrear de donde viene la solicitud (para publicidad web, o para personalización de contenido). De cualquier manera, esta cabecera no es confiable y puede ser fácilmente falsificada. Note que Referrer está mal escrito como “Referer” (desafortunadamente, se debe seguir también).
+
+**User-Agent: browser-type** - Identifica el tipo de navegador usado para hacer la solicitud. El servidor puede usar esta información para regresar diferente documentación dependiendo del tipo de navegador.
+
+**Content-Length: number-of-bytes** - Usado por la solicitud POST, para informar al servidor la longitud del cuerpo de solicitud.
+
+**Content-Type: mime-type** - Usado por la solicitud POST, para ifnroamar al servidor el tipo de media del cuerpo de solicitud.
+
+**Cache-Control: no-cache|…** - El cliente puede usar esta cabecera para especificar como las páginas deben ser guardadas en cache por el servidor proxy. “no-cache” requiere que el proxy obtenga un copia fresca del servidor original, aún cuando una copia local de cache está disponible. (Un servidor HTTP/1.0 no reconoce “Cache-Control: no-cache”. En su lugar, usa “Pragma: no-cache”. Incluya ambas cabeceras de solicitud si no se esta seguro de la visión del servidor.)
+
+**Authorization:** Usada por el cliente para proveer sus credenciales (username/password) para accesar recursos protegidos. (Esta cabecera será descrita en un capítulo más avanzado en autenticación.
+
+**Cookie: cookie-name-1=cookie-value-1, cookie-name-2=cookie-value-2, …** - El cliente usa esta cabecera para regresar las cookies de regreso al servidor, las cuales fueron antes definidas por el servidor para administración de estado. (Esta cabecera será discutida en un capítulo más adelante en administración de estado.)
+
+**If-Modified-Since: date** - Dice al servidor que envíe la página sólo si ha sido modificada después de una fecha especifica.
+
+#### Solicitud GET por un Directorio
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
