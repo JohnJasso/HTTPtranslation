@@ -805,34 +805,7 @@ Lo siguiente es una muestra de formulario HTML, el cual es producido el siguient
 </html>
 ```
 
-<html>
-<head><title>A Sample HTML Form</title></head>
-<body>
-  <h2 align="left">A Sample HTML Data Entry Form</h2>
-  <form method="get" action="/bin/process">
-    Enter your name: <input type="text" name="username"><br />
-    Enter your password: <input type="password" name="password"><br />
-    Which year?
-    <input type="radio" name="year" value="2" />Yr 1
-    <input type="radio" name="year" value="2" />Yr 2
-    <input type="radio" name="year" value="3" />Yr 3<br />
-    Subject registered:
-    <input type="checkbox" name="subject" value="e101" />E101
-    <input type="checkbox" name="subject" value="e102" />E102
-    <input type="checkbox" name="subject" value="e103" />E103<br />
-    Select Day:
-    <select name="day">
-      <option value="mon">Monday</option>
-      <option value="wed">Wednesday</option>
-      <option value="fri">Friday</option>
-    </select><br />
-    <textarea rows="3" cols="30">Enter your special request here</textarea><br />
-    <input type="submit" value="SEND" />
-    <input type="reset" value="CLEAR" />
-    <input type="hidden" name="action" value="registration" />
-  </form>
-</body>
-</html>
+![Alt](/images/screen10.png "Title")
 
 Un formulario contiene campos. Los tipos de campo incluyen:
 * Text Box: producido por `<input type="text">`.
@@ -855,7 +828,7 @@ Caracteres especiales no son permitidos dentro de la cadena de consulta. Estos d
 
 `name=Peter+Lee&address=%23123+Happy+Ave&Language=C%2B%2B`
 
-La cadena de cosulta puede ser mandada al servidor usando ya sea una solicitud HTTP con el método GET o POST, el cual es especificado en el atributo "method" de <form>.
+La cadena de cosulta puede ser mandada al servidor usando ya sea una solicitud HTTP con el método GET o POST, el cual es especificado en el atributo "method" de `<form>.
 
 > <form method="get|post" action="url">
 
@@ -893,18 +866,7 @@ El siguiente formulario HTML es usado para colectar el nombre de usuario y contr
 </html>
 ```
 
-<html>
-<head><title>Login</title></head>
-<body>
-  <h2>LOGIN</h2>
-  <form method="get" action="/bin/login">
-    Username: <input type="text" name="user" size="25" /><br />
-    Password: <input type="password" name="pw" size="10" /><br /><br />
-    <input type="hidden" name="action" value="login" />
-    <input type="submit" value="SEND" />
-  </form>
-</body>
-</html>
+![Alt](/images/screen11.png "Title")
 
 El método de solicitud GET es usado para enviar la cadena de consulta. Supongamos que el usario introduce "Peter Lee" como el username, "123456" como contraseña; y hace click en el boton de enviar. La siguiente solicitud GET es:
 
@@ -961,6 +923,216 @@ URI (Identificador Uniforme de Recurso), definida en RFC3986, es más general qu
 * Los parámetros de solicitud, en la forma de pares nombre=valor, son separados de la URL por un '?'. Los pares name=value son separados por un '&'.
 * EL #nameAnchor identifica un fragmento dentro del documento HTML, definido via la etiqueta de anclaje <a name="anchorName">...</a>.
 * Reescritura de URL para administración de sesión, p.ej., "...;sessionID=xxxxxx".
+
+### Método de Solicitud "POST"
+El método POST es usado para "postear" datos adicionales al servidor (p.ej., envíode formulario de datos HTML o subir un archivo). Emitir una URL HTTP desde el navegador siempre acciona una solicitud GET. Para accionar una solicitud POST, se puede usar un formulario HTML con el atributo _method="post"_ o escribir un propio programa de red. Para enviar un formulario de datos HTML, la solicitud POST es lo mismo que GET excepto que la cadena de cosulta URL-codificada es enviada en el cuerpo de solicitud, en vez de anexarla detrás de la request-URI.
+
+La solicitud POST toma la siguiente sintaxis:
+
+> POST request-URI HTTP-version
+> Content-Type: mime-type
+> Content-Length: number-of-bytes
+> (other optional request headers)
+>   
+> (URL-encoded query string)
+
+Las cabeceras de solicitud Content-Type y Content-Length son necesarias en la solicitud POST para informar al servidor el tipo de media y la longitud del cuerpo de solicitud.
+
+#####Ejemplo: Envío de Formulario de Datos usando el Método de Solicitud POST
+
+Se usa el mismo script HTML que arriba, pero se cambia el metodo de solicitud a POST.
+
+```
+<html>
+<head><title>Login</title></head>
+<body>
+  <h2>LOGIN</h2>
+  <form method="post" action="/bin/login">
+    Username: <input type="text" name="user" size="25" /><br />
+    Password: <input type="password" name="pw" size="10" /><br /><br />
+    <input type="hidden" name="action" value="login" />
+    <input type="submit" value="SEND" />
+  </form>
+</body>
+</html>
+```
+
+Supongamos que el usuario introduce "Peter Lee" como nombre de usuaruo y "123456" como contraseña, y hace click en el botón de enviar, la siguiente solicitud POST sería generada por el navegador:
+
+```
+POST /bin/login HTTP/1.1
+Host: 127.0.0.1:8000
+Accept: image/gif, image/jpeg, */*
+Referer: http://127.0.0.1:8000/login.html
+Accept-Language: en-us
+Content-Type: application/x-www-form-urlencoded
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Content-Length: 37
+Connection: Keep-Alive
+Cache-Control: no-cache
+   
+User=Peter+Lee&pw=123456&action=login
+```
+
+Nótese que la cabecera Content-Type informa al servidor que los datos son URL-encoded (con un tipo MIME especial _application/x-www-form-urlencoded_), y la cabecera Content-Length dice al servidor cuantos byts leer del cuerpo del mensaje.
+
+##### POST vs GET para el Envío de Formularios de Datos
+
+Como fue mencionado en la sección anterior, la solicitud POST tiene las siguientes ventajas comparada con GET en el envío de la cadena de consulta:
+* La cantidad de datos que pueden ser publicados es ilimitada, ya que son guardados en el cuerpo de solicitud, el cual es a menudo enviado al servidor en una tranmisión de datos separada.
+* La cadena de consulta no s mostrada en la barra de dirección del navegador.
+
+Nótese que aunque la contraseña no es mostrada en la barra de dirección del navegador, es transimitida al servidor en texto claro, y sujeta a husmeo de red. Así que, enviar una contraseña usando una solicitud POST absolutamente no es seguro.
+
+### Subida de Datos usando una Solicitud POST multipart/form-data.
+ "RFC 1867: Form-based File upload in HTML" especifica como un archivo puede ser subido al servidor usando POST desde un formulario HTML. Un nuevo atributo _type="file"_ se añadió a la etiqueta <input> de <form>HTML para soportar la subida de archivos. Los datos POST de subida de archivos no son URL-encoded (en el estándar _application/x-www-form-urlencoded), pero usa un nuevo tipo MIME de _multipart/form-data_.
+
+ ##### Ejemplo
+
+ El siguiente formulario HTML puede ser usado para el envío de archivos:
+ ```
+ <html>
+<head><title>File Upload</title></head>
+<body>
+  <h2>Upload File</h2>
+  <form method="post" enctype="multipart/form-data" action="servlet/UploadServlet">
+    Who are you: <input type="text" name="username" /><br />
+    Choose the file to upload:
+    <input type="file" name="fileID" /><br />
+    <input type="submit" value="SEND" />
+  </form>
+</body>
+</html>
+```
+
+![Alt](/images/screen12.png "Title")
+
+Cuando el navegador encontró un etiqueta `<input>`con atributo _type="file"_, muestra una caja de texto y un botón "browse...", para permitir al usuario elegir el archivo a subir.
+
+Cuando el usuario hace click en el botón de enviar, el navegador envía el formulario dedatos y el contenido del los arhivos seleccionados. El tipo de codificación anterior "application/x-www-form-urlencoded" es ineficiente para el envío de datos binarios y caracteres no-ASCII. Un nuevo tipo de media "multipart/form-data" es usado en su lugar.
+
+Cada parte identifica el nombre de la entrada dentro del formulario HTML original, en el tipo de contenido si el medio es conocido, o como "application/octet-stream" de otra manera.
+
+El archivo local original podría ser suministrado como un parámetro "filename", o en la cabecera "Content-Disposition: form-data".
+
+Un ejemplo del mensaje POST para la subida de archivos es como sigue:
+
+```
+POST /bin/upload HTTP/1.1
+Host: test101
+Accept: image/gif, image/jpeg, */*
+Accept-Language: en-us
+Content-Type: multipart/form-data; boundary=---------------------------7d41b838504d8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Content-Length: 342
+Connection: Keep-Alive
+Cache-Control: no-cache
+   
+-----------------------------7d41b838504d8 Content-Disposition: form-data; name="username" 
+Peter Lee
+-----------------------------7d41b838504d8 Content-Disposition: form-data; name="fileID"; filename="C:\temp.html" Content-Type: text/plain 
+<h1>Home page on main server</h1> 
+-----------------------------7d41b838504d8--
+```
+
+Servlet 3.0 provee soporte incluído para el procesamiento de la subida de archivos. Lea "Uploading Files in Servlet 3.0".
+
+### Método de Solicitud "CONNECT"
+
+La solicitud HTTP CONNECT es usada para pedir a un proxy que haga una conexión a otro servidor y simplemente transmita el contenido, en vez de tratar de analizar o guardar el mensaje. Esto es usado a menudopara hacer una conexión a través de un proxy.
+
+### Otros Métodos de Solicitud
+
+PUT: Pide al servidor que guarde datos.
+
+DELETE: Pide al servidor que borre datos.
+
+Por consideraciones de seguridad, PUT y DELETE no son soportados por la mayoría de los servidores de producción.
+
+Métodos de extensión (también códigos de error y cabeceras) pueden ser definidos para extender la funcionalidad del protocolo HTTP.
+
+### Negociación de Contenido
+
+Como fue mencionado anteriormente, HTTP soporta la negociación de contenido entre el cliente y el servidor. Un ciente puede usar cabecera adicionales (como Accept, Accept-Language, Accept-Charset, Accept-Encoding) para decir al servidor qué puede manejar o qué contenido prefiere. Si el servidor posee multiples versiones del mismo documento en diferente formato, regresará el formato que el cliente prefiera. Este proceso es llamado _negociación de contenido_.
+
+#### Negociación de Tipo de Contenido
+
+El servidor usa un archivo de configuración MIME (llamado "conf\mime.types") para mapear la _extensión de archivo_ a un _tipo de media_, para así determinar el tipo de media del archivo mirando su extensión de archivo. Por ejemplo, extensiones de archivo ".htm", ".html" son asociadas con tipo de media MIME "text/html", extensiones de archivo ".jpg", ".jpeg" son asociadas con "image/jpg". Cuando un archivo es regresado al cliente, el servidor tiene que desplegar una cabecera de respuesta "Content-Type" para informar al cliente el tipo de media de los datos.
+
+Para la negocición del tipo de contenido, supongamos que el cliente solicita un archivo llamdao "logo" sin especificar su tipo, y envía la cabecera "Accept: image/gif, image/jpeg,...". Si el servidor tiene 2 formatos de "logo": "logo.gif" y "logo.jpg", y la configuración MIME tiene las siguientes entradas:
+```
+image/gif 		gif
+image/jpeg 		jpeg  jpg  jpe
+```
+
+El servidor regresará "logo.gif" al cliente, basado en la cabecera _Accept_ del cliente, y el mapeo MIME type/file. El servidor incluirá una cabecera "Content-type: image/gif" en su respuesta.
+
+El rastro de mensaje es mostrado:
+```
+GET /logo HTTP/1.1
+Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg,
+  application/x-shockwave-flash, application/vnd.ms-excel, 
+  application/vnd.ms-powerpoint, application/msword, */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: test101:8080
+Connection: Keep-Alive
+(blank line)
+```
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 29 Feb 2004 01:42:22 GMT
+Server: Apache/1.3.29 (Win32)
+Content-Location: logo.gif
+Vary: negotiate,accept
+TCN: choice
+Last-Modified: Wed, 21 Feb 1996 19:45:52 GMT
+ETag: "0-916-312b7670;404142de"
+Accept-Ranges: bytes
+Content-Length: 2326
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: image/gif
+(blank line)
+(body omitted)
+```
+
+Sin embargo, si el servidor tiene 3 archivos "logo.*", "logo.gif", "logo.html", "logo.jpg", y "Accept: */*" fue usado:
+```
+GET /logo HTTP/1.1
+Accept: */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: test101:8080
+Connection: Keep-Alive
+(blank line)
+```
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 29 Feb 2004 01:48:16 GMT
+Server: Apache/1.3.29 (Win32)
+Content-Location: logo.html
+Vary: negotiate,accept
+TCN: choice
+Last-Modified: Fri, 20 Feb 2004 04:31:17 GMT
+ETag: "0-10-40358d95;404144c1"
+Accept-Ranges: bytes
+Content-Length: 16
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+(blank line)
+(body omitted)
+```
+
+`Accept: */*`
+
 
 
 
