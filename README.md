@@ -766,8 +766,201 @@ EL siguiente ejemplo muestra una solicitud TRACE emitida a través de un servido
 
 (Para comparar la solicitud TRACE con la ruta de rastreo)
 
+### Envío de Formulario de Datos HTML y Cadena de Consulta
+
+En muchas aplicaciones de Internet, tales como comercio electrónico y motores de búsqueda, se requiere que los clientes envien información adicional al servidor (p.ej. el nombre, dirección, las palabras clave de búsqueda). Basados en los datos enviados, el servidor toma la acción apropiada y produce una respuesta personalizada.
+
+Los clientes son presentados usualmente con un formulario (producido usando una etiqueta HTML <form>). Una vez que se completa la información solicitada y se presiona el botón de envío, el navegador empaqueta el formulario de datos y los envía al servidor, usando ya sea una solictud GET o POST.
+
+Lo siguiente es una muestra de formulario HTML, el cual es producido el siguiente script HTML:
+
+```
+<html>
+<head><title>A Sample HTML Form</title></head>
+<body>
+  <h2 align="left">A Sample HTML Data Entry Form</h2>
+  <form method="get" action="/bin/process">
+    Enter your name: <input type="text" name="username"><br />
+    Enter your password: <input type="password" name="password"><br />
+    Which year?
+    <input type="radio" name="year" value="2" />Yr 1
+    <input type="radio" name="year" value="2" />Yr 2
+    <input type="radio" name="year" value="3" />Yr 3<br />
+    Subject registered:
+    <input type="checkbox" name="subject" value="e101" />E101
+    <input type="checkbox" name="subject" value="e102" />E102
+    <input type="checkbox" name="subject" value="e103" />E103<br />
+    Select Day:
+    <select name="day">
+      <option value="mon">Monday</option>
+      <option value="wed">Wednesday</option>
+      <option value="fri">Friday</option>
+    </select><br />
+    <textarea rows="3" cols="30">Enter your special request here</textarea><br />
+    <input type="submit" value="SEND" />
+    <input type="reset" value="CLEAR" />
+    <input type="hidden" name="action" value="registration" />
+  </form>
+</body>
+</html>
+```
+
+<html>
+<head><title>A Sample HTML Form</title></head>
+<body>
+  <h2 align="left">A Sample HTML Data Entry Form</h2>
+  <form method="get" action="/bin/process">
+    Enter your name: <input type="text" name="username"><br />
+    Enter your password: <input type="password" name="password"><br />
+    Which year?
+    <input type="radio" name="year" value="2" />Yr 1
+    <input type="radio" name="year" value="2" />Yr 2
+    <input type="radio" name="year" value="3" />Yr 3<br />
+    Subject registered:
+    <input type="checkbox" name="subject" value="e101" />E101
+    <input type="checkbox" name="subject" value="e102" />E102
+    <input type="checkbox" name="subject" value="e103" />E103<br />
+    Select Day:
+    <select name="day">
+      <option value="mon">Monday</option>
+      <option value="wed">Wednesday</option>
+      <option value="fri">Friday</option>
+    </select><br />
+    <textarea rows="3" cols="30">Enter your special request here</textarea><br />
+    <input type="submit" value="SEND" />
+    <input type="reset" value="CLEAR" />
+    <input type="hidden" name="action" value="registration" />
+  </form>
+</body>
+</html>
+
+Un formulario contiene campos. Los tipos de campo incluyen:
+* Text Box: producido por `<input type="text">`.
+* Password Box: producido por `<input type="password">`.
+* Radio Button: producido por `<input type="radio">`.
+* Checkbox: producido por `<input type="checkbox">`.
+* Selection: producido por `<select>` y `<option>`.
+* Text Area: producido por `<textarea>`.
+* Submit Button: producido por `<input type="submit">`.
+* Reset Button: producido por `<input type="reset">`.
+* Hidden Field: producido por `<input type="hidden">`.
+* Button: producido por `<input type="button">`.
+
+Cada campo tiene un nombre y puede tomar 
+un valor específico. Una vez que el cliente rellena los campos y presione el boton de envío, el navegador colecta cada uno de los nombres y valores de los campos, los empaqueta en pares "name=value", y concatena todos los camposjuntos usando "&" como un separador de campo. Esto es conocido como Cadena de Consulta. Enviará la cadena de consulta al servidor como parte de la solicitud.
+
+> name1=value1&name2=value2&name3=value3&...
+
+Caracteres especiales no son permitidos dentro de la cadena de consulta. Estos deben ser reemplazados por un "%" seguido del códigoASCII en hexadecimal, "~" es remplazado por "%7E", "#" por "%23" y así con los demás. Ya que el espacio en blanco es bastante común, este puede ser reemplazado ya sea por "%20" o "+" (el caracter "+" de ser reemplazado por "%2B"). Este proceso de reemplazo es llamado _URL-encoding_, y el resultado es una cadena de consulta URL-encoded. Por ejemplo, supongamos que hay 3 campos dentro de un formulario, con nombre/valor de "name=Peter Lee", "address=#123 Happy Ave" y "language=C++", la cadena de cosultado codificada en URL es:
+
+`name=Peter+Lee&address=%23123+Happy+Ave&Language=C%2B%2B`
+
+La cadena de cosulta puede ser mandada al servidor usando ya sea una solicitud HTTP con el método GET o POST, el cual es especificado en el atributo "method" de <form>.
+
+> <form method="get|post" action="url">
+
+Si el método de solicitud GET es usado, la cadena de consulta URL-encoded será anexada detrás de la request-URI después de un caracter "?":
+
+> GET request-URI?query-string HTTP-version
+> (other optional request headers)
+> (blank line)
+> (optional request body)
 
 
+El uso de la solicitud GET para enviar la cadena de consulta tiene los siguientes inconvenientes:
+
+* La cantidad de datos que se podrían anexar detrás de la request-URI es limitada. Si esta cantidad es excede un límite específico al servidor, el servidor regresaría un error "414 Request URI too Large".
+* La cadena de consulta URL-encoded aparecería en la barra de dirección del navegador.
+
+El método de solicitud POST supera estos inconvenientes. Si POST es usado, la cadena de solicitud será enviada en el cuerpo del mensaje de solicitud, donde la cantidad no es limitada. Las cabeceras de solicitud Contet-Type y Conteny-Length son usadas para notificar al servidor del tipo y la longitud de la cadea de consulta. La cadena no aparecerá en la barra de dirección del navegador. El método POST será discutido más tarde.
+
+#####Ejemplo
+
+El siguiente formulario HTML es usado para colectar el nombre de usuario y contraseña en un menu de entrada.
+
+```
+<html>
+<head><title>Login</title></head>
+<body>
+  <h2>LOGIN</h2>
+  <form method="get" action="/bin/login">
+    Username: <input type="text" name="user" size="25" /><br />
+    Password: <input type="password" name="pw" size="10" /><br /><br />
+    <input type="hidden" name="action" value="login" />
+    <input type="submit" value="SEND" />
+  </form>
+</body>
+</html>
+```
+
+<html>
+<head><title>Login</title></head>
+<body>
+  <h2>LOGIN</h2>
+  <form method="get" action="/bin/login">
+    Username: <input type="text" name="user" size="25" /><br />
+    Password: <input type="password" name="pw" size="10" /><br /><br />
+    <input type="hidden" name="action" value="login" />
+    <input type="submit" value="SEND" />
+  </form>
+</body>
+</html>
+
+El método de solicitud GET es usado para enviar la cadena de consulta. Supongamos que el usario introduce "Peter Lee" como el username, "123456" como contraseña; y hace click en el boton de enviar. La siguiente solicitud GET es:
+
+```
+GET /bin/login?user=Peter+Lee&pw=123456&action=login HTTP/1.1
+Accept: image/gif, image/jpeg, */*
+Referer: http://127.0.0.1:8000/login.html
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: 127.0.0.1:8000
+Connection: Keep-Alive
+```
+
+Nótese que aun sí la contraseña que se introduce no se muestra en la pantalla, es mostrada claramente en la barra de dirección del navegador. Nunca se debería enviar una contraseña sin la apropiada encriptación.
+
+`http://127.0.0.1:8000/bin/login?user=Peter+Lee&pw=123456&action=login`
+
+### URL y URI
+
+#####URL (Uniform Resource Locator)
+
+Una URL, definida en RFC 2396, es usada para identificar un recurso a través de la web de forma única. URL tiene la siguiente sintaxis:
+
+> protocol://hostname:port/path-and-file-name
+
+Hay 4 partes en una URL:
+1. Protocol: El protocolo de aplicación usado por el cliente y el servidor, p.ej. HTTP, FTP, y telnet.
+2. Hostname: El nombre de dominio DNS (p.ej. www.nowhere123.com) o dirección IP (p.ej. 192.128.1.2) del servidor.
+3. Port: El numero de puerto TCP en que el servidor esta escuchando por solicitudes entrantes de los clientes.
+4. Path-and-file-name: El nombre y locación del recurso solicitado, bajo el directorio de documentos del servidor.
+
+Por ejemplo, en la URL _http://www.nowhere123.com/docs/index.html_, el protocolo de comunicación es HTTP; el nombre de servidor es www.nowhere123.com. El número de puerto no fue especificado en la URL, y toma el numero predeterminado, el cual es el puerto TCP 80 para HTTP [STD 2]. La ruta y el nombre de archivo para que el recurso sea localizado es "/docs/index.html".
+
+Otros ejemplos de URL son:
+
+```
+ftp://www.ftp.org/docs/test.txt
+mailto:user@test101.com
+news:soc.culture.Singapore
+telnet://www.nowhere123.com/
+```
+
+#####URL Codificada
+
+Una URL no puede contener carateres especiales, como espacios en blanco o tildes. Los caracteres especiales son codificados, en la forma de %xx, donde xx es el codigo ASCII en hexadecimal. Por ejemplo '~' es codificado como %7e; '+' es codificado como %2b. Un espacio en blanco puede ser codificado como %20 o '+'. La URL despuésde ser codificada es llamda encoded URL.
+
+#####URI (Uniform Resource Identifier)
+
+URI (Identificador Uniforme de Recurso), definida en RFC3986, es más general que la URL, la cual puede hasta localizar un fragmento dentro de un recurso. La sintaxis de la URI para el protocolo HTTP es:
+
+> http://host:port/path?request-parameters#nameAnchor
+
+* Los parámetros de solicitud, en la forma de pares nombre=valor, son separados de la URL por un '?'. Los pares name=value son separados por un '&'.
+* EL #nameAnchor identifica un fragmento dentro del documento HTML, definido via la etiqueta de anclaje <a name="anchorName">...</a>.
+* Reescritura de URL para administración de sesión, p.ej., "...;sessionID=xxxxxx".
 
 
 
