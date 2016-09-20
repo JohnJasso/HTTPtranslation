@@ -1133,9 +1133,154 @@ Content-Type: text/html
 
 `Accept: */*`
 
+Las siguientes directivas de configuración Apache son relevantes para la negociación de tipo de contenido:
+* La directiva _TypeConfig_ puede ser usada para especificar la localización del archivo de mapeo MIME:
+`TypeConfig conf/mime.types`
+* La directiva _AddType_ puede ser usada para incluir mapeo de tipo de MIME adicional en la línea de configuración:
+`AddType mime-type extension1 [extension2]`
+* La directiva _DefaultType_ da al tipo de MIME de una extensión de archivo desconocida (en la cabecera de respuesta _Content-Type_)
+`DefaultType text/plain`
 
+#### Negociación de Lenguaje y "Options MultiView"
 
+La directiva "Options MultiView" es una manera más simple de implementar negociación de lenguaje. Por ejemplo:
 
+```
+AddLanguage en .en
+<Directory "C:/_javabin/Apache1.3.29/htdocs">
+    Options Indexes MultiViews
+</Directory>
+```
+
+Supongamos que el cliente solicita "index.html" y envía "Accept-Language: en-us". Si el servidor tiene "test.html", "test.html.en", y "test.html.cn", basado en las preferencias del cliente, "test.html" será regresado. ("en" incluye "en-us").
+
+Un rastro de mensaje es como sigue:
+```
+GET /index.html HTTP/1.1
+Accept: */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: test101:8080
+Connection: Keep-Alive
+(blank line)
+```
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 29 Feb 2004 02:08:29 GMT
+Server: Apache/1.3.29 (Win32)
+Content-Location: index.html.en
+Vary: negotiate
+TCN: choice
+Last-Modified: Sun, 29 Feb 2004 02:07:45 GMT
+ETag: "0-13-40414971;40414964"
+Accept-Ranges: bytes
+Content-Length: 19
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+Content-Language: en
+(blank line)
+(body omitted)
+```
+
+La directiva _AddLanguage_ se necesita para asociar un código de lenguaje con una extensión de archivo, similar al mapeo de tipo/archivo MIME.
+
+Nótese que la directiva "Options All" no incluye la opción "MultiViews". Eso es, se tiene que explicitamente activar la opción MultiViews.
+
+La directiva _LanguagePriority_ puede ser usada para especificar la preferencia de lenguaje en case de un empate durante la negociación de contenido o si el cliente no expresa una preferencia. Por ejemplo:
+```
+<IfModule mod_negotiation.c>
+   LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br
+</IfModule>
+```
+
+####Negociación de Conjunto de Caracteres
+
+Un cliente puede usar la cabecera de solicitud _Accept-Charset_ para negociar con el servidor por el conjunto de caracteres que prefiere.
+> Accept-Charset: charset-1, charset-2, ...
+
+Los conjuntos de caracteres comunmente encontrados incluyen: ISO-8859-1 (Latino-I), ISO-8859-2, ISO-8859-5, BIG5 (Chino Tradicional), GB2312 (Chino Simplificado), UCS2 (Unicode de 2 bytes), UCS4 (Unicode de 4 bytes), UTF8 (Unicode Codificado), etc.
+
+Similarmete, la directiva _AddCharset_ es usado para asuciar la extensión de archivo con el conjunto de caracteres. Por ejemplo:
+
+```
+AddCharset ISO-8859-8   .iso8859-8
+AddCharset ISO-2022-JP  .jis
+AddCharset Big5         .Big5  .big5
+AddCharset WINDOWS-1251 .cp-1251
+AddCharset CP866        .cp866
+AddCharset ISO-8859-5   .iso-ru
+AddCharset KOI8-R       .koi8-r
+AddCharset UCS-2        .ucs2
+AddCharset UCS-4        .ucs4
+AddCharset UTF-8        .utf8
+```
+
+#### Negociación de Codificación
+
+Un cliente puede usar la cabecera _Accept-Encoding_ para decirle al servidor el tipo de codificación que soporta. Los esquemas comunes de codificación son: "x-gzip (.gz, .tgz)" y "x-compress (.Z)".
+
+> Accept-Encoding: encoding-method-1, encoding-method-2, ...
+
+Similarmente, la directiva _AddEncoding_ es usada para asociar la extensión de archivo con el esquema de codificación. Por ejemplo:
+
+```
+AddEncoding x-compress  .Z
+AddEncoding x-gzip      .gz .tgz
+```
+
+### Conexiones Persistentes (o Keep-Alive)
+
+En HTTP/1.0, el servidor cierra la conexión TCP después de entregar la respuesta de forma predeterminada (Connection: Close). Eso es, cada conexión TCP sirve sólo una solicitud. Esto no es eficiente ya que muchas páginas HTML contienen hiperlinks (via la etiqueta `<a href="url">`) a otros recursos (como lo son imágenes, scripts - ya sean locales o desde un servidor remoto). Si se descarga una página que contiene 5 imágenes inline, el navegador tiene que establecer una conexión TCP 6 veces para el mismo servidor.
+
+El cliente puede negociar con el servidor y pedir que no cierre la conexión después de entregar la respuesta, para que otra solicitud pueda ser enviada a través de la misma conexión. Esto es conocido como una **conexión persistenete** (o conexión keep-alive). Las conexiones persistentes aumenta de gran manera la eficiencia de la red. Para HTTP/1.0, la conexión predeterminada es no persistente. Para pedir un conexión persistente, el cliente debe incluir una cabecera de solicitud "Connection: Keep-alive" en el mensaje de solicitud para negociar con el servidor.
+
+Para HTTP/1.1 la conexión predeterminada es persistente. El cliente no tiene que enviar la cabecera "Connection: Keep-alive". En vez de eso, el cliente podría desear enviar la cabecera "Connection: Close" para pedir al servidor que cierre la conexión después de entregar la respuesta.
+
+Una conexión persistenete es extremadamente útilpara páginas web con pequeñas imágenes inline y otros datos asociados, ya que todos estos pueden ser descargados usando la misma conexión. Los beneficios de una conexión persistente son:
+* Ahorro de tiempo y recursos de CPU en abrir y cerrar la conexión TCP en el cliente, proxy, compuertas, el servidor origen.
+* Las solicitudes pueden ser "pipelined". Esto es, un cliente puede hacer varias solicitudes sin esperar por cada respuesta, para así usar la misma red de una manera más eficiente.
+* Una respuesta más rápida ya que no se necesita tiempo para llevar a cabo la verificación de apertura de conexión TCP.
+
+En un servidor HTTP Apache, varias directivas de configuración están relacionadas con las conexiones persistentes:
+
+La directiva _KeeepAlive_ decide si soportar conexiones persistentes o no. Esto toma un valor de On u Off.
+> KeepAlive On|Off
+
+La directiva _MaxKeepAliveRequests_ determina el máximo número de solicitudes que pueden ser enviadas a través de la conexión persistente. Se puede definir en 0 para permitir un número ilimitadode solicitudes. Es recomendado definir un número alto para tener un mejor desempeño y eficiencia de red.
+> MaxKeepAliveRequests 200
+
+La directiva _KeepAliveTimeout_ define el receso en segundos para que una conexión persistente espere por la siguiente solicitud.
+> KeepAliveTimeput 10
+
+### Rango de Descarga
+```
+Accept-Ranges: bytes
+Transfer-Encoding: chunked
+```
+
+### Control de Cache
+
+El cliente puede enviar una cabecera de solicitud "Cache-control: no-cache" para decir al proxy que obtenga un nueva copia del servidor original, aún si hay una copia local guardada. Desafortunadamente, HTTP/1.0 no entiende esta cabecera, pero usa una antigua cabecera de solicitud "Pragma: no-cache". Se podrían incluir ambas cabeceras en la solicitud.
+```
+Pragma: no-cache
+Cache-Control: no-cache
+```
+#### Referencias y Fuentes
+* W3C HTTP specifications at http://www.w3.org/standards/techs/http.
+* RFC 2616 "Hypertext Transfer Protocol HTTP/1.1", 1999 @ http://www.ietf.org/rfc/rfc2616.txt.
+* RFC 1945 "Hypertext Transfer Protocol HTTP/1.0", 1996 @ http://www.ietf.org/rfc/rfc1945.txt.
+* STD 2: "Assigned numbers", 1994.
+* STD 5: "Internet Protocol (IP)", 1981.
+* STD 6: "User Datagram Protocol (UDP)", 1980.
+* STD 7: "Transmission Control Protocol (TCP)", 1983.
+* RFC 2396: "Uniform Resource Identifiers (URI): Generic Syntax", 1998.
+* RFC 2045: "Multipurpose Internet Mail Extension (MIME) Part 1: Format of Internet Message Bodies", 1996.
+* RFC 1867: "Form-based File upload in HTML", 1995, (obsoleted by RFC2854).
+* RFC 2854: "The text/html media type", 2000.
+* Mutlipart Servlet for file upload @ www.servlets.com
 
 
 
