@@ -45,10 +45,12 @@ Hay 4 partes en una URL:
 Por ejemplo, en la URL http://www.nowhere123.com/doc/index.html, el protocolo de comunicación es HTTP; el nombre del host es www.nowhere123.com. El numero del puerto no fue especificado en la URL y toma el numero de default, el cuál es el puerto TCP 80 para HTTP. La ruta y nombre del archivo para el localizar el recurso son “/docs/index.html”.
 
 Otros ejemplos de URL son:
-> ftp://www.ftp.org/docs/test.text
-> mailto:user@test101.com
-> news:soc.culture.Singapore
-> telnet://www.nowhere123.com/
+```
+ftp://www.ftp.org/docs/test.text
+mailto:user@test101.com
+news:soc.culture.Singapore
+telnet://www.nowhere123.com/
+```
 
 ####Protocolo HTTP
 
@@ -56,13 +58,15 @@ Como fue mencionado, cuando tu introduces una URL en la caja de direcciones del 
 
 Por ejemplo, el navegador tradujo la URL http://www.nowhere123.com/doc/index.html en el mensaje de solicitud siguiente:
 
-> GET /docs/index.html HTTP/1.1
-> Host: www.nowhere123.com
-> Accept: image/gif, image/jpeg, */*
-> Accept-Language: en-us
-> Accept-Encoding: gzip, deflate
-> User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
-> (blank line)
+```
+GET /docs/index.html HTTP/1.1
+Host: www.nowhere123.com
+Accept: image/gif, image/jpeg, */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+(blank line)
+```
 
 Cuando este mensaje llega al servidor, el servidor puede tomar cualquiera de estas acciones:
 
@@ -72,18 +76,20 @@ Cuando este mensaje llega al servidor, el servidor puede tomar cualquiera de est
 
 Un ejemplo de mensaje de respuesta de HTTP es como se muestra:
 
-> HTTP/1.1 200 OK
-> Date: Sun, 18 Oct 2009 08:56:53 GMT
-> Server: Apache/2.2.14 (Win32)
-> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
-> ETag: "10000000565a5-2c-3e94b66c2e680"
-> Accept-Ranges: bytes
-> Content-Length: 44
-> Connection: close
-> Content-Type: text/html
-> X-Pad: avoid browser bug
->  
-> <html><body><h1>It works!</h1></body></html>
+```
+HTTP/1.1 200 OK
+Date: Sun, 18 Oct 2009 08:56:53 GMT
+Server: Apache/2.2.14 (Win32)
+Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+ETag: "10000000565a5-2c-3e94b66c2e680"
+Accept-Ranges: bytes
+Content-Length: 44
+Connection: close
+Content-Type: text/html
+X-Pad: avoid browser bug
+
+<html><body><h1>It works!</h1></body></html>
+```
 
 El navegador recibe el mensaje de respuesta, interpreta el mensaje y muestra los contenidos del mensaje en la ventana del navegador de acuerdo al tipo de media del mensaje (como en la cabecera de respuesta de Tipo de Contenido). Tipos de media comunes incluyen “text/plain”, “text/html”, “image/gif”,”image/jpeg”, “audio/mpeg”, “video/mpeg”, “application/msword”, y “application/pdf”.
 
@@ -148,9 +154,11 @@ La línea de solicitud tiene la sintaxis siguiente:
 
 Ejemplos de una línea de solicitud son:
 
-> GET /test.html HTTP/1.1
-> HEAD /query.html HTTP/1.0
-> POST /index.html HTTP/1.1
+```
+GET /test.html HTTP/1.1
+HEAD /query.html HTTP/1.0
+POST /index.html HTTP/1.1
+```
 
 #####Cabeceras de Solicitud
 
@@ -159,10 +167,12 @@ Las cabeceras de solicitud están en la forma de pares nombre:valor. Valores mul
 > request-header-name: request-header-value1, request-header-value2, …
 
 Ejemplos de cabeceras de solicitud son:
-> Host: www.xyz.com
-> Connection: Keep-Alive
-> Accept: image/gif, image/jpeg, */*
-> Accept-Language: us-en, fr, cn
+```
+Host: www.xyz.com
+Connection: Keep-Alive
+Accept: image/gif, image/jpeg, */*
+Accept-Language: us-en, fr, cn
+```
 
 #####Ejemplo:
 
@@ -190,9 +200,11 @@ La línea de estatus tiene la siguiente sintaxis:
 * Códigos de estatus y frases de razón comunes son: “200 OK”, “404 Not Found”, “403 Forbidden”, “500 Internal Server Error”.
 
 Ejemplos de línea de estatus son:
-> HTTP/1.1 200 OK
-> HTTP/1.0 404 Not Found
-> HTTP/1.1 403 Forbidden
+```
+HTTP/1.1 200 OK
+HTTP/1.0 404 Not Found
+HTTP/1.1 403 Forbidden
+```
 
 #####Cabeceras de Respuesta
 
@@ -201,10 +213,12 @@ Las cabeceras de respuesta están en la forma de pares nombre:valor:
 > response-header-name: response-header-value1, response-header-value2, …
 
 Ejemplos de cabeceras de respuesta son:
-> Content-Type: text/html
-> Content-Length: 35
-> Connection: Keep-Alive
-> Keep-Alive: timeout=15, max=100
+```
+Content-Type: text/html
+Content-Length: 35
+Connection: Keep-Alive
+Keep-Alive: timeout=15, max=100
+```
 
 EL cuerpo del mensaje de respuesta contiene los datos del recurso solicitado.
 
@@ -232,10 +246,12 @@ El protocolo HTTP define un conjunto de métodos de solicitud. Un cliente puede 
 
 GET es el método de solicitud HTTP más común. Un cliente usa GET para pedir (u obtener) una pieza de recurso de un servidor HTTP. Un mensaje de solicitud GET tiene la siguiente sintáxi:
 
-> _**GET** request-URI HTTP-version
-> (optional request headers)
-> (blank line)
-> (optional request body)_
+```
+**GET** request-URI HTTP-version
+(optional request headers)
+(blank line)
+(optional request body)
+```
 
 * La palabra clave GET es sensible a mayúsculas, y debe estar en ellas.
 * request-URI: especifica la ruta del recurso solicitado, la cual debe iniciar desde la raíz "/" del directorio base de documentos.
@@ -251,14 +267,16 @@ Hay muchas maneras de probar las solicitudes HTTP. Se pueden usar programas de u
 
 "Telnet" es una utilidad de red muy útil. Se puede usar telnet para establecer una conexión TCP con un servidor; y emitir una solicitud HTTP. Por ejemplo, supongamos que se ha inciado el servidor HTTP en el servidor local (dirección IP 127.0.0.1) en el puerto 8000:
 
-> **telnet**
-> telnet> **help**
-> ... telnet help menu ...
-> telnet> **open 127.0.0.1 8000**
-> Connecting To 127.0.0.1...
-> **GET /index.html HTTP/1.0**
-> (Hit enter twice to send the terminating blank line ...)
+```
+**telnet**
+telnet> **help**
+... telnet help menu ...
+telnet> **open 127.0.0.1 8000**
+Connecting To 127.0.0.1...
+**GET /index.html HTTP/1.0**
+(Hit enter twice to send the terminating blank line ...)
 > ... HTTP response message ...
+```
 
 Telnet es un protocolo basasdo en caracteres. Cada caracter insertado en el cliente telnet será enviado al servidor inmediatamente. Por esto, no se puede hacer erroes de tecleo cuando se introducen los comandos, ya que delete y backspace serán enviados al servidor. Puede que se tenga que habilitar la opción "local echo" para ver los carateres que se introducen. Cheque el manual telnet (busque Windows' help) para ver detalles en el uso de telnet.
 
@@ -306,23 +324,27 @@ public class HttpClient {
 
 Lo siguiente muestra la respuesta a una solicitud GET HTTP/1.0 (emitida via telnet o propio programa de red - asumiendo que se ha inicilizado un servidor HTTP):
 
-> **GET /index.html HTTP/1.0**
-> (enter twice to create a blank line)
+```
+**GET /index.html HTTP/1.0**
+(enter twice to create a blank line)
+```
 
-> **HTTP/1.1 200 OK**
-> Date: Sun, 18 Oct 2009 08:56:53 GMT
-> Server: Apache/2.2.14 (Win32)
-> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
-> ETag: "10000000565a5-2c-3e94b66c2e680"
-> Accept-Ranges: bytes
-> Content-Length: 44
-> Connection: close
-> Content-Type: text/html
-> X-Pad: avoid browser bug
->   
-> <html><body><h1>It works!</h1></body></html>
->   
-> Connection to host lost.
+```
+**HTTP/1.1 200 OK**
+Date: Sun, 18 Oct 2009 08:56:53 GMT
+Server: Apache/2.2.14 (Win32)
+Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+ETag: "10000000565a5-2c-3e94b66c2e680"
+Accept-Ranges: bytes
+Content-Length: 44
+Connection: close
+Content-Type: text/html
+X-Pad: avoid browser bug
+   
+<html><body><h1>It works!</h1></body></html>
+   
+Connection to host lost.
+```
 
 En este ejemplo, el cliente emite una solicitud GET para pedir un documento llamado "/index.html"; y negocia el uso de HTTP/1.0. Se necesita una línea en blanco después de la cabecera de solicitud. Este mensaje de solicitud no contiene un cuerpo.
 
@@ -370,112 +392,131 @@ Algunos códigos de estatus comunmente econtrados:
 ##### Ejemplo: Método de Solicitud mal escrito
 En la solicitud, "GET" está mal escrito como "get". El servidor regresa un error "501 Method Not Implemented". La cabecera de respuesta "Allow" indica al cliente los métodos permitidos.
 
-> **get** /test.html HTTP/1.0
-> (enter twice to create a blank line)
+```
+**get** /test.html HTTP/1.0
+(enter twice to create a blank line)
+```
 
-> HTTP/1.1 501 **Method Not Implemented**
-> Date: Sun, 18 Oct 2009 10:32:05 GMT
-> Server: Apache/2.2.14 (Win32)
-> **Allow: GET,HEAD,POST,OPTIONS,TRACE**
-> Content-Length: 215
-> Connection: close
-> Content-Type: text/html; charset=iso-8859-1
->   
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <html><head>
-> <title>501 Method Not Implemented</title>
-> </head><body>
-> <h1>Method Not Implemented</h1>
-> <p>get to /index.html not supported.<br />
-> </p>
-> </body></html>
+```
+HTTP/1.1 501 **Method Not Implemented**
+Date: Sun, 18 Oct 2009 10:32:05 GMT
+Server: Apache/2.2.14 (Win32)
+**Allow: GET,HEAD,POST,OPTIONS,TRACE**
+Content-Length: 215
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+ 
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>501 Method Not Implemented</title>
+</head><body>
+<h1>Method Not Implemented</h1>
+<p>get to /index.html not supported.<br />
+</p>
+</body></html>
+```
 
 ##### Ejemplo: 404 File Not Found:
 In esta solicitud GET, la URL de solicitud "/t.html" no se puede encontrar bajo el directorio de documento del servidor. El servidor regresa un error "404 Not Found".
 
-> GET **/t.html** HTTP/1.0
-> (enter twice to create a blank line)
+```
+GET **/t.html** HTTP/1.0
+(enter twice to create a blank line)
+```
 
-
-> HTTP/1.1 404 Not Found
-> Date: Sun, 18 Oct 2009 10:36:20 GMT
-> Server: Apache/2.2.14 (Win32)
-> Content-Length: 204
-> Connection: close
-> Content-Type: text/html; charset=iso-8859-1
->    
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <html><head>
-> <title>404 Not Found</title>
-> </head><body>
-> <h1>Not Found</h1>
-> <p>The requested URL /t.html was not found on this server.</p>
-> </body></html>
+```
+HTTP/1.1 404 Not Found
+Date: Sun, 18 Oct 2009 10:36:20 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Length: 204
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+   
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>404 Not Found</title>
+</head><body>
+<h1>Not Found</h1>
+<p>The requested URL /t.html was not found on this server.</p>
+</body></html>
+```
 
 ##### Ejemplo: Número de Versión HTTP Incorrecto
 En esta solicitud GET, la versión HTTP fue mal escrita, resultando en una mala sintaxis.El servidor regresa un erro "404B Bad Request". La version HTTP debería ser ya sea HTTP/1.0 o HTTP/1.1.
 
-> GET /index.html **HTTTTTP/1.0**
-> (enter twice to create a blank line)
+```
+GET /index.html **HTTTTTP/1.0**
+(enter twice to create a blank line)
+```
 
-> HTTP/1.1 **400 Bad Request**
-> Date: Sun, 08 Feb 2004 01:29:40 GMT
-> Server: Apache/1.3.29 (Win32)
-> Connection: close
-> Content-Type: text/html; charset=iso-8859-1
-> 
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <HTML><HEAD>
-> <TITLE>400 Bad Request</TITLE>
-> </HEAD><BODY>
-> <H1>Bad Request</H1>
-> Your browser sent a request that this server could not understand.<P>
-> The request line contained invalid characters following the protocol string.<P><P>
-> </BODY></HTML>
+```
+HTTP/1.1 **400 Bad Request**
+Date: Sun, 08 Feb 2004 01:29:40 GMT
+Server: Apache/1.3.29 (Win32)
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML><HEAD>
+<TITLE>400 Bad Request</TITLE>
+</HEAD><BODY>
+<H1>Bad Request</H1>
+Your browser sent a request that this server could not understand.<P>
+The request line contained invalid characters following the protocol string.<P><P>
+</BODY></HTML>
+```
 
 Nota: El último Apache 2.2.14 ignora este error y regresa el documento con el código de estatus "200 OK".
 
 ##### Ejemplo: Request-URI Incorrecta
 En la siguiente solicitud GET, la _request-URI_ no comenzó desde la raíz "/", resultando en "bad request".
 
-> GET test.html HTTP/1.0
-> (blank line)
+```
+GET test.html HTTP/1.0
+(blank line)
+```
 
-> HTTP/1.1 **400 Bad Request**
-> Date: Sun, 18 Oct 2009 10:42:27 GMT
-> Server: Apache/2.2.14 (Win32)
-> Content-Length: 226
-> Connection: close
-> Content-Type: text/html; charset=iso-8859-1
->    
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <html><head>
-> <title>400 Bad Request</title>
-> </head><body>
-> <h1>Bad Request</h1>
-> <p>Your browser sent a request that this server could not understand.<br />
-> </p>
-> </body></html>
+```
+HTTP/1.1 **400 Bad Request**
+Date: Sun, 18 Oct 2009 10:42:27 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Length: 226
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+   
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>400 Bad Request</title>
+</head><body>
+<h1>Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.<br />
+</p>
+</body></html>
+```
 
 ##### Ejemplo: Conexión Keep-Alive
 Predeterminadamente, para solicitud GET HTTP/1.0, el servidor cierra la conexión TCP una vez que la respuesta es entregada. Se podría solicitar que la conexión TCP se mantenga, (para mandar otra solicitud usando la misma conexión TCP, y así mejorar la eficiencia de red), usando una cabecera opcional de solicitud "_Connection: Keep-Alive_". El servidor incluye una cabecera de respuesta de conexión Keep-Alive para informar al cliente que puede enviar otra solicitud usando esta conexión, antes del receso de keep-alive. Otra cabecara de respuesta, "_Keep-Alive: timeout=x, max=x_" indica al cliente el receso (en segundos) y el máximo número de solicitudes que pueden ser enviadas a través de esta conexión persistente.
 
-> GET /test.html HTTP/1.0
-> Connection: Keep-Alive
-> (blank line)
+```
+GET /test.html HTTP/1.0
+Connection: Keep-Alive
+(blank line)
+```
 
-> HTTP/1.1 200 OK
-> Date: Sun, 18 Oct 2009 10:47:06 GMT
-> Server: Apache/2.2.14 (Win32)
-> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
-> ETag: "10000000565a5-2c-3e94b66c2e680"
-> Accept-Ranges: bytes
-> Content-Length: 44
-> Keep-Alive: timeout=5, max=100
-> Connection: Keep-Alive
-> Content-Type: text/html
->    
-> <html><body><h1>It works!</h1></body></html>
+```
+HTTP/1.1 200 OK
+Date: Sun, 18 Oct 2009 10:47:06 GMT
+Server: Apache/2.2.14 (Win32)
+Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+ETag: "10000000565a5-2c-3e94b66c2e680"
+Accept-Ranges: bytes
+Content-Length: 44
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+   
+<html><body><h1>It works!</h1></body></html>
+```
 
 Notas:
 * El mensaje "Connection to host lost" (para telnet) aparece después del receso "keep-alive".
@@ -486,30 +527,35 @@ Notas:
 ##### Ejemplo: Acceso a un Recurso Protegido
 La siguiente solicitud GET intento accesar un recurso protegido. El servidor regresa un error "403 Forbidden". En este ejemplo, el directorio "_htdocs\forbidden_" está configurado para denegar todo acceso en el archivo de configuración  "_httpd.conf_" del servidor HTTP Apache de la siguiente manera:
 
-> <Directory "C:/apache/htdocs/forbidden">
->    Order deny,allow
->    deny from all
-> </Directory>
+```
+<Directory "C:/apache/htdocs/forbidden">
+   Order deny,allow
+   deny from all
+</Directory>
+```
 
-> GET /forbidden/index.html HTTP/1.0
-> (blank line)
+```
+GET /forbidden/index.html HTTP/1.0
+(blank line)
+```
 
-> HTTP/1.1 403 Forbidden
-> Date: Sun, 18 Oct 2009 11:58:41 GMT
-> Server: Apache/2.2.14 (Win32)
-> Content-Length: 222
-> Keep-Alive: timeout=5, max=100
-> Connection: Keep-Alive
-> Content-Type: text/html; charset=iso-8859-1
->    
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <html><head>
-> <title>403 Forbidden</title>
-> </head><body>
-> <h1>Forbidden</h1>
-> <p>You don't have permission to access /forbidden/index.html
-> on this server.</p>
-> </body></html>
+```
+HTTP/1.1 403 Forbidden
+Date: Sun, 18 Oct 2009 11:58:41 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Length: 222
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: text/html; charset=iso-8859-1
+   
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>403 Forbidden</title>
+</head><body>
+<h1>Forbidden</h1>
+<p>You don't have permission to access /forbidden/index.html on this server.</p>
+</body></html>
+```
 
 #### Solicitud GET HTTP/1.1
 
@@ -518,42 +564,50 @@ Un servidor HTTP/1.1 soporta los llamados virtual hosts (servidores virtuales). 
 ##### Ejemplo: Solicitud GET HTTP/1.1
 HTTP/1.1 mantiene conexión persistente (o keep-alive) de manera predeterminada para mejorar la eficiencia de red. Se puede usar una cabecera de solicitud "Connection: Close" para pedir al servidor cerrar la conexión TCP una vez que la respuesta fue entregada.
 
-> GET /index.html HTTP/1.1
-> **Host: 127.0.0.1**
-> (blank line)
+```
+GET /index.html HTTP/1.1
+**Host: 127.0.0.1**
+(blank line)
+```
 
-> HTTP/1.1 200 OK
-> Date: Sun, 18 Oct 2009 12:10:12 GMT
-> Server: Apache/2.2.14 (Win32)
-> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
-> ETag: "10000000565a5-2c-3e94b66c2e680"
-> Accept-Ranges: bytes
-> Content-Length: 44
-> Content-Type: text/html
->    
-> <html><body><h1>It works!</h1></body></html>
+```
+HTTP/1.1 200 OK
+Date: Sun, 18 Oct 2009 12:10:12 GMT
+Server: Apache/2.2.14 (Win32)
+Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+ETag: "10000000565a5-2c-3e94b66c2e680"
+Accept-Ranges: bytes
+Content-Length: 44
+Content-Type: text/html
+   
+<html><body><h1>It works!</h1></body></html>
+```
 
 ##### Ejemplo: Cabecera de Servidor HTTP/1.1 Faltante
 El siguiente ejemplo muestra que la cabecera "Host" es obligatoria en una solicitud HTTP/1.1. Si esta está faltante,el servidor regresa un error "400 Bad Request".
 
-> GET /index.html HTTP/1.1
-> (blank line)
+```
+GET /index.html HTTP/1.1
+(blank line)
+```
 
-> HTTP/1.1 400 Bad Request
-> Date: Sun, 18 Oct 2009 12:13:46 GMT
-> Server: Apache/2.2.14 (Win32)
-> Content-Length: 226
-> Connection: close
-> Content-Type: text/html; charset=iso-8859-1
->    
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <html><head>
-> <title>400 Bad Request</title>
-> </head><body>
-> <h1>Bad Request</h1>
-> <p>Your browser sent a request that this server could not understand.<br />
-> </p>
-> </body></html>
+```
+HTTP/1.1 400 Bad Request
+Date: Sun, 18 Oct 2009 12:13:46 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Length: 226
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+   
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>400 Bad Request</title>
+</head><body>
+<h1>Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.<br />
+</p>
+</body></html>
+```
 
 #### Solicitudes GET Condicionales
 
@@ -611,25 +665,29 @@ Si el cliente emite una solicitud GET a “/testdir/“ (al directorio).
 
 Es interesante tomar nota que si un cliente emite una solicitud GET a “/testdir” (sin especificar la ruta de directorio “/“), el servidor regresa “301 Move Permanently” con una nueva “Location” de “/testdir/“, como sigue.
 
-> GET /testdir HTTP/1.1
-> Host: 127.0.0.1
-> (blank line)
+```
+GET /testdir HTTP/1.1
+Host: 127.0.0.1
+(blank line)
+```
 
-> HTTP/1.1 301 Moved Permanently
-> Date: Sun, 18 Oct 2009 13:19:15 GMT
-> Server: Apache/2.2.14 (Win32)
-> Location: http://127.0.0.1:8000/testdir/
-> Content-Length: 238
-> Content-Type: text/html; charset=iso-8859-1
->    
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <html><head>
-> <title>301 Moved Permanently</title>
-> </head><body>
-> <h1>Moved Permanently</h1>
-> <p>The document has moved <a href="http://127.0.0.1:8000/testdir/">here</a>.</p>
-> 
-> </body></html>
+```
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 18 Oct 2009 13:19:15 GMT
+Server: Apache/2.2.14 (Win32)
+Location: http://127.0.0.1:8000/testdir/
+Content-Length: 238
+Content-Type: text/html; charset=iso-8859-1
+  
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>301 Moved Permanently</title>
+</head><body>
+<h1>Moved Permanently</h1>
+<p>The document has moved <a href="http://127.0.0.1:8000/testdir/">here</a>.</p> 
+
+</body></html>
+```
 
 La mayoría de los navegadores seguirán con otra solicitud a “/testdir/“. Por ejemplo, si se emite http://127.0.0.1:8000/testdir sin “/“ desde un navegador, se podría notar que “/“ fue añadido a la dirección después de que la respuesta fue dad. La moraleja de la historia es: se debería incluir el “/“ para que una solicitud de directorio guarde una solicitud GET adicional.
 
@@ -639,34 +697,38 @@ Para enviar una solicitud GET a través de un servidor proxy, (a) establezca una
 
 EL siguiente rastro fue capturado usando telnet. Una conexión establecida con el servidor proxy, y una solicitud GET emitida. Una request-URI absoluta es usada en la linea de solicitud.
 
-> GET http://www.amazon.com/index.html HTTP/1.1
-> Host: www.amazon.com
-> Connection: Close
-> (blank line)
+```
+GET http://www.amazon.com/index.html HTTP/1.1
+Host: www.amazon.com
+Connection: Close
+(blank line)
+```
 
-> HTTP/1.1 302 Found
-> Transfer-Encoding: chunked
-> Date: Fri, 27 Feb 2004 09:27:35 GMT
-> Content-Type: text/html; charset=iso-8859-1
-> Connection: close
-> Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
-> Set-Cookie: skin=; domain=.amazon.com; path=/; expires=Wed, 01-Aug-01 12:00:00 > GMT
-> Connection: close
-> Location: http://www.amazon.com:80/exec/obidos/subst/home/home.html
-> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
->    
-> ed
-> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-> <HTML><HEAD>
-> <TITLE>302 Found</TITLE>
-> </HEAD><BODY>
-> <H1>Found</H1>
-> The document has moved
-> <A HREF="http://www.amazon.com:80/exec/obidos/subst/home/home.html">
-> here</A>.<P>
-> </BODY></HTML>
->    
-> 0
+```
+HTTP/1.1 302 Found
+Transfer-Encoding: chunked
+Date: Fri, 27 Feb 2004 09:27:35 GMT
+Content-Type: text/html; charset=iso-8859-1
+Connection: close
+Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
+Set-Cookie: skin=; domain=.amazon.com; path=/; expires=Wed, 01-Aug-01 12:00:00 > GMT
+Connection: close
+Location: http://www.amazon.com:80/exec/obidos/subst/home/home.html
+Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+   
+ed
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML><HEAD>
+<TITLE>302 Found</TITLE>
+</HEAD><BODY>
+<H1>Found</H1>
+The document has moved
+<A HREF="http://www.amazon.com:80/exec/obidos/subst/home/home.html">
+here</A>.<P>
+</BODY></HTML>
+   
+0
+```
 
 Tome nota de que la respuesta es regresada por pedazos.
 
@@ -675,35 +737,43 @@ Tome nota de que la respuesta es regresada por pedazos.
 La solicitud HEAD es similar a GET. Sin embargo, el servidor regresa solamente la cabecera de respuesta sin el cuerpo de respuesta, el cual contiene el documento en sí. La solicitud HEAD es útil para checar las cabeceras, tales como Last-Modified, Content-Type, Content-Length, anteved enviar una solicitud GET apropiada para obtener el documento.
 
 La sintaxis de la solicitud HEAD es como sigue:
-> HEAD request-URI HTTP-version
-> (other optional request headers)
-> (blank line)
-> (optional request body)
+```
+HEAD request-URI HTTP-version
+(other optional request headers)
+(blank line)
+(optional request body)
+```
 
 ##### Ejemplo
 
-> HEAD /index.html HTTP/1.0
-> (blank line)
+```
+HEAD /index.html HTTP/1.0
+(blank line)
+```
 
-> HTTP/1.1 200 OK
-> Date: Sun, 18 Oct 2009 14:09:16 GMT
-> Server: Apache/2.2.14 (Win32)
-> Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
-> ETag: "10000000565a5-2c-3e94b66c2e680"
-> Accept-Ranges: bytes
-> Content-Length: 44
-> Connection: close
-> Content-Type: text/html
-> X-Pad: avoid browser bug
+```
+HTTP/1.1 200 OK
+Date: Sun, 18 Oct 2009 14:09:16 GMT
+Server: Apache/2.2.14 (Win32)
+Last-Modified: Sat, 20 Nov 2004 07:16:26 GMT
+ETag: "10000000565a5-2c-3e94b66c2e680"
+Accept-Ranges: bytes
+Content-Length: 44
+Connection: close
+Content-Type: text/html
+X-Pad: avoid browser bug
+```
 
 Note que la respuesta consiste de la cabecera únicamente sin el cuerpo, el cual contiene el documento en sí.
 
 ### Método de Solicitud “OPTIONS”
 
 Un cliente puede usar un método de solicitud OPTIONS para consultar al servidor cuales métodos son soportados. La sintaxis para un mensaje de solicitud OPTIONS es:
-> OPTIONS request-URI|* HTTP-version
-> (other optional headers)
-> (blank line)
+```
+OPTIONS request-URI|* HTTP-version
+(other optional headers)
+(blank line)
+```
 
 “+” puede ser usado en lugar de una request-URI para indicar que la solicitud no se aplica a ningún recurso en particular.
 
@@ -711,20 +781,25 @@ Un cliente puede usar un método de solicitud OPTIONS para consultar al servidor
 
 Por ejemplo, la siguiente solicitud OPTIONS es mandado a través de un servidor proxy:
 
-> OPTIONS http://www.amazon.com/ HTTP/1.1
-> Host: www.amazon.com
-> Connection: Close
-> (blank line)
+```
+OPTIONS http://www.amazon.com/ HTTP/1.1
+Host: www.amazon.com
+Connection: Close
+(blank line)
+```
 
-> HTTP/1.1 200 OK
-> Date: Fri, 27 Feb 2004 09:42:46 GMT
-> Content-Length: 0
-> Connection: close
-> Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
-> Allow: GET, HEAD, POST, OPTIONS, TRACE
-> Connection: close
-> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
-> (blank line)
+```
+HTTP/1.1 200 OK
+Date: Fri, 27 Feb 2004 09:42:46 GMT
+Content-Length: 0
+Connection: close
+Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
+Allow: GET, HEAD, POST, OPTIONS, TRACE
+Connection: close
+Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+(blank line)
+```
+
 
 Todos los servidores que permiten una solicitud GET permitirán una solicitud HEAD. A veces HEAD no es listada.
 
@@ -734,35 +809,41 @@ Todos los servidores que permiten una solicitud GET permitirán una solicitud HE
 Un cliente puede enviar una solicitud TRACE para pedir al servidor regrese un rastro de diagnóstico.
 
 La solicitud TRACE toma la siguiente sintaxis:
-> TRACE / HTTP-version
-> (blank line)
+```
+TRACE / HTTP-version
+(blank line)
+```
 
 ##### Ejemplo
 
 EL siguiente ejemplo muestra una solicitud TRACE emitida a través de un servidor proxy.
 
-> TRACE http://www.amazon.com/ HTTP/1.1
-> Host: www.amazon.com
-> Connection: Close
-> (blank line)
+```
+TRACE http://www.amazon.com/ HTTP/1.1
+Host: www.amazon.com
+Connection: Close
+(blank line)
+```
 
-> HTTP/1.1 200 OK
-> Transfer-Encoding: chunked
-> Date: Fri, 27 Feb 2004 09:44:21 GMT
-> Content-Type: message/http
-> Connection: close
-> Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
-> Connection: close
-> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
->    
-> 9d
-> TRACE / HTTP/1.1
-> Connection: keep-alive
-> Host: www.amazon.com
-> Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
-> X-Forwarded-For: 155.69.185.59, 155.69.5.234
->    
-> 0
+```
+HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Date: Fri, 27 Feb 2004 09:44:21 GMT
+Content-Type: message/http
+Connection: close
+Server: Stronghold/2.4.2 Apache/1.3.6 C2NetEU/2412 (Unix)
+Connection: close
+Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+   
+9d
+TRACE / HTTP/1.1
+Connection: keep-alive
+Host: www.amazon.com
+Via: 1.1 xproxy (NetCache NetApp/5.3.1R4D5)
+X-Forwarded-For: 155.69.185.59, 155.69.5.234
+   
+0
+```
 
 (Para comparar la solicitud TRACE con la ruta de rastreo)
 
@@ -828,17 +909,18 @@ Caracteres especiales no son permitidos dentro de la cadena de consulta. Estos d
 
 `name=Peter+Lee&address=%23123+Happy+Ave&Language=C%2B%2B`
 
-La cadena de cosulta puede ser mandada al servidor usando ya sea una solicitud HTTP con el método GET o POST, el cual es especificado en el atributo "method" de `<form>.
+La cadena de cosulta puede ser mandada al servidor usando ya sea una solicitud HTTP con el método GET o POST, el cual es especificado en el atributo "method" de `<form>`.
 
 > <form method="get|post" action="url">
 
 Si el método de solicitud GET es usado, la cadena de consulta URL-encoded será anexada detrás de la request-URI después de un caracter "?":
 
-> GET request-URI?query-string HTTP-version
-> (other optional request headers)
-> (blank line)
-> (optional request body)
-
+```
+GET request-URI?query-string HTTP-version
+(other optional request headers)
+(blank line)
+(optional request body)
+```
 
 El uso de la solicitud GET para enviar la cadena de consulta tiene los siguientes inconvenientes:
 
@@ -986,9 +1068,9 @@ Como fue mencionado en la sección anterior, la solicitud POST tiene las siguien
 Nótese que aunque la contraseña no es mostrada en la barra de dirección del navegador, es transimitida al servidor en texto claro, y sujeta a husmeo de red. Así que, enviar una contraseña usando una solicitud POST absolutamente no es seguro.
 
 ### Subida de Datos usando una Solicitud POST multipart/form-data.
- "RFC 1867: Form-based File upload in HTML" especifica como un archivo puede ser subido al servidor usando POST desde un formulario HTML. Un nuevo atributo _type="file"_ se añadió a la etiqueta <input> de <form>HTML para soportar la subida de archivos. Los datos POST de subida de archivos no son URL-encoded (en el estándar _application/x-www-form-urlencoded), pero usa un nuevo tipo MIME de _multipart/form-data_.
+ "RFC 1867: Form-based File upload in HTML" especifica como un archivo puede ser subido al servidor usando POST desde un formulario HTML. Un nuevo atributo _type="file"_ se añadió a la etiqueta <input> de <form>HTML para soportar la subida de archivos. Los datos POST de subida de archivos no son URL-encoded (en el estándar _application/x-www-form-urlencoded_), pero usa un nuevo tipo MIME de _multipart/form-data_.
 
- ##### Ejemplo
+ #####Ejemplo
 
  El siguiente formulario HTML puede ser usado para el envío de archivos:
  ```
